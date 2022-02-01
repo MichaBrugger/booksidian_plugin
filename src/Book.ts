@@ -1,3 +1,4 @@
+import { CurrentYAML } from "const/settings";
 import { GoodreadsBook } from "const/goodreads";
 import Booksidian from "main";
 import { Body } from "./Body";
@@ -23,8 +24,6 @@ export class Book {
 		this.id = book.identifiers.$.id;
 		this.pages = parseInt(book.identifiers.num_pages[0]) || undefined;
 		this.title = this.cleanTitle(book.title);
-		this.series = this.getSeries(book.title);
-		this.subtitle = this.getSubTitle(book.title);
 		this.author = book.author;
 		this.isbn = book.isbn;
 		this.rating = parseInt(book.user_rating) || 0;
@@ -41,27 +40,22 @@ export class Book {
 	}
 
 	public getContent(): string {
+		const set = this.plugin.settings;
 		try {
-			return this.getFrontMatter() + this.getBody();
+			return (
+				this.getFrontMatter(set.frontmatterDictionary) +
+				this.getBody(set.bodyString)
+			);
 		} catch (error) {
 			console.log(error);
 		}
-		return this.getFrontMatter(); // + this.getBody();
 	}
 
-	private getBody(): string {
-		const currentBody = this.plugin.settings.bodyString;
-
-		// if (currentBody.length > 0) {
-		// 	return new Body(currentBody, this).getBody();
-		// }
-		// return "";
+	private getBody(currentBody: string): string {
 		return new Body(currentBody, this).getBody();
 	}
 
-	private getFrontMatter(): string {
-		const currentYAML = this.plugin.settings.frontmatterDictionary;
-
+	private getFrontMatter(currentYAML: CurrentYAML): string {
 		if (Object.keys(currentYAML).length > 0) {
 			return new Frontmatter(currentYAML, this).getFrontmatter();
 		}
@@ -69,9 +63,10 @@ export class Book {
 	}
 
 	public async createFile(book: Book, path: string): Promise<void> {
+		const fileName = this.getBody(this.plugin.settings.fileName);
 		try {
 			await this.plugin.app.vault.create(
-				`${path}/${book.getTitle()}.md`,
+				`${path}/${fileName}.md`,
 				book.getContent()
 			);
 		} catch (error) {
@@ -79,17 +74,36 @@ export class Book {
 		}
 	}
 
-	private cleanTitle(title: string): string {
+	private cleanTitle(title: string) {
+		this.series = "";
+		this.subtitle = "";
+		let series = "";
+
+		if (title.contains("(") && title.contains("#")) {
+			series = this.getSeries(title);
+		}
+
+		title = title.replace(series, "");
+
+		if (title.contains(":")) {
+			this.getSubTitle(title);
+		}
+
+		title = title.split(":")[0];
 		return title.replace(/[^a-zA-Z0-9 ]/g, "").trim();
 	}
 
 	private getSeries(title: string): string {
 		const match = title.match(/\((.*?)\)/);
-		return match ? match[1] : "";
+		if (match && match[1].contains("#")) {
+			this.series = match[1].trim();
+			return match[0];
+		}
+		return "";
 	}
 
-	private getSubTitle(title: string): string {
-		return title.replace(/\(.*?\)/, "").split(":")[1];
+	private getSubTitle(title: string) {
+		this.subtitle = title.split(":")[1].trim();
 	}
 
 	private parseDate(inputDate: string) {

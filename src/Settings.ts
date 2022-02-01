@@ -13,7 +13,7 @@ export class Settings extends PluginSettingTab {
 
 	getSelectedCount(): string {
 		const selected = Object.keys(this.getYAML()).length;
-		const total = 11;
+		const total = 13;
 		return `${selected}/${total}`;
 	}
 
@@ -90,7 +90,37 @@ export class Settings extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					})
 			);
+		containerEl.createEl("h3", { text: "Body" });
 
+		// set the goodreads shelves that should be exported
+		new Setting(containerEl)
+			.setName("Content of the book-note")
+			.setDesc(
+				"Here you can specifiy the content of the book-note. You can use all the {{placeholders}} that are available in the frontmatter."
+			)
+			.setTooltip("Don't forget to warp the placeholders in {{}}.")
+			.addTextArea((text) => {
+				text.inputEl.rows = 4;
+				text.setValue(this.plugin.settings.bodyString);
+				text.onChange(async (value) => {
+					this.plugin.settings.bodyString = value;
+					await this.plugin.saveSettings();
+				});
+			});
+		new Setting(containerEl)
+			.setName("Filename")
+			.setDesc(
+				"Here you can specifiy the content of the book-note. You can use all the {{placeholders}} that are available in the frontmatter."
+			)
+			.setTooltip("Don't forget to warp the placeholders in {{}}.")
+			.addTextArea((text) => {
+				text.inputEl.rows = 4;
+				text.setValue(this.plugin.settings.fileName);
+				text.onChange(async (value) => {
+					this.plugin.settings.fileName = value;
+					await this.plugin.saveSettings();
+				});
+			});
 		containerEl.createEl("h3", { text: "Frontmatter" });
 
 		new Setting(containerEl)
@@ -100,9 +130,11 @@ export class Settings extends PluginSettingTab {
 				dropdown
 					.addOption("", `${this.getSelectedCount()}`)
 					.addOption("tags", `${this.getDisplay("tags")}`)
-					.addOption("cover", `${this.getDisplay("cover")}`)
-					.addOption("title", `${this.getDisplay("title")}`)
 					.addOption("author", `${this.getDisplay("author")}`)
+					.addOption("title", `${this.getDisplay("title")}`)
+					.addOption("subtitle", `${this.getDisplay("subtitle")}`)
+					.addOption("series", `${this.getDisplay("series")}`)
+					.addOption("cover", `${this.getDisplay("cover")}`)
 					.addOption("isbn", `${this.getDisplay("isbn")}`)
 					.addOption("rating", `${this.getDisplay("rating")}`)
 					.addOption("avgRating", `${this.getDisplay("avgRating")}`)
@@ -181,23 +213,5 @@ export class Settings extends PluginSettingTab {
 						.setTooltip("Remove")
 				);
 		});
-		containerEl.createEl("h3", { text: "Body" });
-
-		// set the goodreads shelves that should be exported
-		new Setting(containerEl)
-			.setName("Content of the book-note")
-			.setDesc(
-				"Here you can specifiy the content of the book-note. You can use all the {{placeholders}} that are available in the frontmatter."
-			)
-			.setTooltip("Don't forget to warp the placeholders in {{}}.")
-			.addTextArea((text) => {
-				text.inputEl.rows = 6;
-				text.inputEl.style.width = "100%";
-				text.setValue(this.plugin.settings.bodyString);
-				text.onChange(async (value) => {
-					this.plugin.settings.bodyString = value;
-					await this.plugin.saveSettings();
-				});
-			});
 	}
 }

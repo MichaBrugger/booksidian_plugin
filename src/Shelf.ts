@@ -9,7 +9,7 @@ export class Shelf {
 	books: Book[] = [];
 
 	constructor(public plugin: Booksidian, public shelfName: string) {
-		this.path = `${plugin.settings.targetFolderPath}/${shelfName}`;
+		this.path = `${plugin.settings.targetFolderPath}/`;
 		this.url = `${plugin.settings.goodreadsBaseUrl}${shelfName}`;
 	}
 
