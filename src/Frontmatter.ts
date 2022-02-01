@@ -29,7 +29,7 @@ export class Frontmatter {
 				for (let i = 0; i < newString.length; i++) {
 					// TODO figure out a way to make this more flexible
 					// temp.push(`${prefix}${newString[i].trim()}${postfix}`);
-					temp.push(`- ${newString[i]}`);
+					temp.push(`- ${newString[i].trim()}`);
 				}
 			} else {
 				temp.push(
