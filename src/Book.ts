@@ -90,6 +90,8 @@ export class Book {
 		}
 
 		title = title.split(":")[0];
+		// TODO: implement as soon as I know how to capture all ä, é, etc.
+		// return title.replace(/[^a-zA-Z0-9äöüàéèä]/g, "").trim();
 		return title.replace(/[^a-zA-Z0-9 ]/g, "").trim();
 	}
 

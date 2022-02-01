@@ -22,12 +22,14 @@ export class Frontmatter {
 			const prefix = value.split(key)[0];
 			const postfix = value.split(key)[1];
 
-			// this needs to be fixed, had some issues with the return data types
+			// this whole thing is a mess, I'll have to rethink that logic
 			if (key === "shelves") {
 				const newString = this.book.shelves.split(",");
 				temp.push(`${key}: `);
 				for (let i = 0; i < newString.length; i++) {
-					temp.push(`${prefix}${newString[i].trim()}${postfix}`);
+					// TODO figure out a way to make this more flexible
+					// temp.push(`${prefix}${newString[i].trim()}${postfix}`);
+					temp.push(`- ${newString[i]}`);
 				}
 			} else {
 				temp.push(
