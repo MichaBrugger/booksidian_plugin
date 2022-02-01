@@ -13,7 +13,7 @@ export class Settings extends PluginSettingTab {
 
 	getSelectedCount(): string {
 		const selected = Object.keys(this.getYAML()).length;
-		const total = 13;
+		const total = 12;
 		return `${selected}/${total}`;
 	}
 
@@ -39,8 +39,24 @@ export class Settings extends PluginSettingTab {
 		containerEl.empty();
 		containerEl.createEl("h3", { text: "Goodreads RSS Feed" });
 		containerEl.createEl("p", {
-			text: "Only the first 100 items of a shelf are added to the RSS feed. So if you have more than 100 books, you have to split them into multiple shelves.",
+			text: "Only the first 100 items of a shelf are added to the RSS feed. So if you have more than 100 books, you have to split them into multiple shelves.",
 		});
+
+		// set the target folder for the exports
+		new Setting(containerEl)
+			.setName("Target Folder")
+			.setDesc(
+				"If you leave this empty, the books will be created in the root directory."
+			)
+			.addText((text) =>
+				text
+					.setPlaceholder("")
+					.setValue(this.plugin.settings.targetFolderPath)
+					.onChange(async (value) => {
+						this.plugin.settings.targetFolderPath = value;
+						await this.plugin.saveSettings();
+					})
+			);
 
 		// set the base url for all goodreads rss feeds
 		new Setting(containerEl)
@@ -65,63 +81,58 @@ export class Settings extends PluginSettingTab {
 				"Here you can specify which shelves you'd like to export. Please separate the values with a comma and make sure you got the names right. "
 			)
 			.setTooltip("You can check the proper naming in the RSS url.")
-			.addTextArea((textArea) =>
-				textArea
-					.setPlaceholder("Enter your secret")
+			.addTextArea((text) => {
+				text.inputEl.rows = 6;
+				text.setPlaceholder("Enter your secret")
 					.setValue(this.plugin.settings.goodreadsShelves)
 					.onChange(async (value) => {
 						this.plugin.settings.goodreadsShelves = value;
 						await this.plugin.saveSettings();
-					})
-			);
-
-		// set the target folder for the exports
-		new Setting(containerEl)
-			.setName("Target Folder")
-			.setDesc(
-				"If you leave this empty, the books will be created in folders in the root directory (one folder for each exported shelf)."
-			)
-			.addText((text) =>
-				text
-					.setPlaceholder("")
-					.setValue(this.plugin.settings.targetFolderPath)
-					.onChange(async (value) => {
-						this.plugin.settings.targetFolderPath = value;
-						await this.plugin.saveSettings();
-					})
-			);
-		containerEl.createEl("h3", { text: "Body" });
-
-		// set the goodreads shelves that should be exported
-		new Setting(containerEl)
-			.setName("Content of the book-note")
-			.setDesc(
-				"Here you can specifiy the content of the book-note. You can use all the {{placeholders}} that are available in the frontmatter."
-			)
-			.setTooltip("Don't forget to warp the placeholders in {{}}.")
-			.addTextArea((text) => {
-				text.inputEl.rows = 4;
-				text.setValue(this.plugin.settings.bodyString);
-				text.onChange(async (value) => {
-					this.plugin.settings.bodyString = value;
-					await this.plugin.saveSettings();
-				});
+					});
 			});
+
+		containerEl.createEl("h3", { text: "Body" });
+		containerEl.createEl("p", {
+			text: "You can specify the content of the book-note by using {placeholders}}. You can see the full list of placeholders in the dropdown of the frontmatter. You can choose the frontmatter placeholders you'd like and apply specific formatting to each of them.",
+		});
+
+		// set the title of the book-note
 		new Setting(containerEl)
-			.setName("Filename")
-			.setDesc(
-				"Here you can specifiy the content of the book-note. You can use all the {{placeholders}} that are available in the frontmatter."
-			)
-			.setTooltip("Don't forget to warp the placeholders in {{}}.")
-			.addTextArea((text) => {
-				text.inputEl.rows = 4;
+			.setName("Naming Pattern")
+			.setTooltip("You don't need to add '.md' to the filename")
+			.addText((text) => {
 				text.setValue(this.plugin.settings.fileName);
 				text.onChange(async (value) => {
 					this.plugin.settings.fileName = value;
 					await this.plugin.saveSettings();
 				});
 			});
+
+		// set the body content of the book-note
+		new Setting(containerEl)
+			.setName("Content of the book-note")
+			.setTooltip("Don't forget to wrap the placeholders in {{}}.")
+			.addTextArea((text) => {
+				text.inputEl.rows = 6;
+				text.setValue(this.plugin.settings.bodyString);
+				text.onChange(async (value) => {
+					this.plugin.settings.bodyString = value;
+					await this.plugin.saveSettings();
+				});
+			});
+
 		containerEl.createEl("h3", { text: "Frontmatter" });
+
+		if (Object.keys(this.currentYAML).length > 0) {
+			containerEl.createEl("p", {
+				text: "You can add custom frontmatter to your books. Please use the dropdown to choose the frontmatter you'd like to add.",
+			});
+		}
+		// 	containerEl.createEl("pre", {
+		// 		text: "key: value",
+		// 		attr: { style: "font-size: 12px; color: #999;" },
+		// 	});
+		// }
 
 		new Setting(containerEl)
 			.setName("Available Fields")
@@ -129,7 +140,6 @@ export class Settings extends PluginSettingTab {
 			.addDropdown((dropdown) =>
 				dropdown
 					.addOption("", `${this.getSelectedCount()}`)
-					.addOption("tags", `${this.getDisplay("tags")}`)
 					.addOption("author", `${this.getDisplay("author")}`)
 					.addOption("title", `${this.getDisplay("title")}`)
 					.addOption("subtitle", `${this.getDisplay("subtitle")}`)
@@ -161,16 +171,6 @@ export class Settings extends PluginSettingTab {
 					.setIcon("sync")
 					.setTooltip("Refresh Previews")
 			);
-
-		if (Object.keys(this.currentYAML).length > 0) {
-			containerEl.createEl("p", {
-				text: "You can add custom frontmatter to your books. Please use the following format:",
-			});
-			containerEl.createEl("pre", {
-				text: "key: value",
-				attr: { style: "font-size: 12px; color: #999;" },
-			});
-		}
 
 		Object.keys(this.currentYAML).forEach((key) => {
 			const value = this.currentYAML[key];

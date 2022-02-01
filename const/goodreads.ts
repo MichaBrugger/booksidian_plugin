@@ -13,7 +13,7 @@ export interface GoodreadsBook {
 	content: string;
 	contentSnippet: string;
 	guid: string;
-	user_shelves: string[];
+	user_shelves: string;
 	image_url: string;
 }
 

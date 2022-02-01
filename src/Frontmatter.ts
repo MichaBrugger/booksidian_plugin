@@ -21,9 +21,19 @@ export class Frontmatter {
 			const value = this.currentYAML[key];
 			const prefix = value.split(key)[0];
 			const postfix = value.split(key)[1];
-			temp.push(
-				`${key}: ${prefix}${this.book[key as keyof Book]}${postfix}`
-			);
+
+			// this needs to be fixed, had some issues with the return data types
+			if (key === "shelves") {
+				const newString = this.book.shelves.split(",");
+				temp.push(`${key}: `);
+				for (let i = 0; i < newString.length; i++) {
+					temp.push(`${prefix}${newString[i].trim()}${postfix}`);
+				}
+			} else {
+				temp.push(
+					`${key}: ${prefix}${this.book[key as keyof Book]}${postfix}`
+				);
+			}
 		});
 		return temp.join("\n") + "\n";
 	}

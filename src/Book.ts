@@ -14,7 +14,7 @@ export class Book {
 	isbn: string;
 	rating: number;
 	avgRating: number;
-	shelves: string[] = [];
+	shelves: string;
 	dateAdded: string;
 	dateRead: string;
 	datePublished: string;
