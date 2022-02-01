@@ -6,5 +6,5 @@
 	"description": "Connect Obsidian to your Goodreads.",
 	"author": "Micha Brugger",
 	"authorUrl": "https://github.com/MichaBrugger",
-	"isDesktopOnly": true
+	"isDesktopOnly": false
 }
