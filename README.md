@@ -31,5 +31,13 @@ In the end it's completely up to you how you style your book-notes. One thing I 
 
 ![image](https://user-images.githubusercontent.com/46029522/151970426-377a5997-7c15-4670-b423-17bb04b3720a.png)
 
+You can achieve this look here by adding `cssclass: cards` to the frontmatter of the file you'd like to have your library in and then pasting this code here:
+
+```dataview
+table without id ("![](" + cover +")") as Cover, author as Author
+where cover != null
+sort rating desc
+```
+
 Please check out the amazing work of these two [here](https://github.com/blacksmithgu/obsidian-dataview) and [here](https://github.com/kepano/obsidian-minimal).
 

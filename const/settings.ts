@@ -13,9 +13,9 @@ export interface CurrentYAML {
 
 export const DEFAULT_SETTINGS: BooksidianSettings = {
 	targetFolderPath: "",
-	fileName: "{{title}}.md",
+	fileName: "{{title}}",
 	goodreadsBaseUrl: "https://www.goodreads.com/review/list_rss/...",
 	goodreadsShelves: "currently-reading",
 	frontmatterDictionary: {},
-	bodyString: "# {{title}}\n\n[[{{author}}]]",
+	bodyString: "# {{title}}\n\nauthor::[[{{author}}]]",
 };
