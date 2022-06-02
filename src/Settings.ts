@@ -83,7 +83,7 @@ export class Settings extends PluginSettingTab {
 			.setTooltip("You can check the proper naming in the RSS url.")
 			.addTextArea((text) => {
 				text.inputEl.rows = 6;
-				text.setPlaceholder("Enter your secret")
+				text.setPlaceholder("Your Shelves")
 					.setValue(this.plugin.settings.goodreadsShelves)
 					.onChange(async (value) => {
 						this.plugin.settings.goodreadsShelves = value;
@@ -93,7 +93,7 @@ export class Settings extends PluginSettingTab {
 
 		containerEl.createEl("h3", { text: "Body" });
 		containerEl.createEl("p", {
-			text: "You can specify the content of the book-note by using {placeholders}}. You can see the full list of placeholders in the dropdown of the frontmatter. You can choose the frontmatter placeholders you'd like and apply specific formatting to each of them.",
+			text: "You can specify the content of the book-note by using {{placeholders}}. You can see the full list of placeholders in the dropdown of the frontmatter. You can choose the frontmatter placeholders you'd like and apply specific formatting to each of them.",
 		});
 
 		// set the title of the book-note

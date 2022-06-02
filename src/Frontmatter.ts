@@ -19,8 +19,7 @@ export class Frontmatter {
 		const temp: string[] = [];
 		Object.keys(this.currentYAML).forEach((key: string) => {
 			const value = this.currentYAML[key];
-			const prefix = value.split(key)[0];
-			const postfix = value.split(key)[1];
+			const [prefix, postfix] = value.split(key);
 
 			// this whole thing is a mess, I'll have to rethink that logic
 			if (key === "shelves") {

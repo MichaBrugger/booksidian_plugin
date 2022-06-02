@@ -1,3 +1,6 @@
+// there seems to be an issue with "import Parser from 'rss-parser';"
+// I've decided to stick with the current way, even though it's not ideal
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Parser = require("rss-parser");
 

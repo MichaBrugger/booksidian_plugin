@@ -32,11 +32,15 @@ export class Shelf {
 	}
 
 	public async fetchGoodreadsFeed(): Promise<void> {
-		const feed = await rssParser.parseURL(this.url);
-		feed.items.forEach(async (_book: GoodreadsBook) => {
-			const book = new Book(this.plugin, _book);
-			this.setBook(book);
-		});
+		try {
+			const feed = await rssParser.parseURL(this.url);
+			feed.items.forEach(async (_book: GoodreadsBook) => {
+				const book = new Book(this.plugin, _book);
+				this.setBook(book);
+			});
+		} catch (e) {
+			console.warn(e);
+		}
 	}
 
 	public createBookFiles(): void {
