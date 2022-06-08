@@ -24,6 +24,8 @@ This will open a new page. You can now copy that URL and remove everything after
 
 ![image](https://user-images.githubusercontent.com/46029522/152002763-444c05e1-3a5f-426b-9493-beb99deb9aa3.png)
 
+### Running Booksidian
+You can run the Booksidian sync by executing the "Booksidian Sync" command or by pressing the "B" in your menu bar. Currently, it always requires a manual command. But if anyone is interested, I could also add an automatic sync sometime.
 
 ## Output
 
