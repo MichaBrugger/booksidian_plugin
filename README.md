@@ -1,6 +1,6 @@
 # ⚠️ Looking for support
 
-Having just started my Phd, I'm currently struggling to find the time to extend Booksidian the way I'd like it to be/implement any of the cool new features that have been requested from others over the past months. So while I'm still excited about contributing to this amazing community, I'd be happy for anyone who'd like to continue Booksidian's development (be it through PRs, sharing the repo or forking it). If this sounds like something you'd be interested in, please don't hesitate to reach out (if necessary, I'd be happy to give an introduction to the codebase too :).
+Having just started my PhD, I'm currently struggling to find the time to extend Booksidian the way I'd like it to be/implement any of the cool new features that have been requested from others over the past months. So while I'm still excited about contributing to this amazing community, I'd be happy for anyone who'd like to continue Booksidian's development (be it through PRs, sharing the repo or forking it). If this sounds like something you'd be interested in, please don't hesitate to reach out (if necessary, I'd be happy to give an introduction to the codebase too :).
 
 # Booksidian
 
