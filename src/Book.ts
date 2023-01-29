@@ -79,19 +79,21 @@ export class Book {
 		this.subtitle = "";
 		let series = "";
 
-		if (title.contains("(") && title.contains("#")) {
+		if (title.includes("(") && title.includes("#")) {
 			series = this.getSeries(title);
 		}
 
 		title = title.replace(series, "");
 
-		if (title.contains(":")) {
+		if (title.includes(":")) {
 			this.getSubTitle(title);
 		}
 
 		title = title.split(":")[0];
-		// TODO: make sure there are no titles that fuck up
-		// return title.replace(/[^a-zA-Z0-9 ]/g, "").trim();
+
+		// replace remaining special characters with an empty character
+		title = title.replace(/[&\/\\#,+()$~%.'":*?<>{}|]/g,'');
+
 		return title.trim();
 	}
 
