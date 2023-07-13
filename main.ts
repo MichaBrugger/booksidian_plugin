@@ -56,7 +56,7 @@ export default class Booksidian extends Plugin {
 	async configureSchedule() {
     const minutes = parseInt(this.settings.frequency);
     const milliseconds = minutes * 60 * 1000; // minutes * seconds * milliseconds
-    console.log('Readwise Official plugin: setting interval to ', milliseconds, 'milliseconds');
+    console.log('Booksidian plugin: setting interval to ', milliseconds, 'milliseconds');
     window.clearInterval(this.scheduleInterval);
     this.scheduleInterval = null;
     if (!milliseconds) {
