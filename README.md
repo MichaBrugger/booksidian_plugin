@@ -29,7 +29,15 @@ This will open a new page. You can now copy that URL and remove everything after
 ![image](https://user-images.githubusercontent.com/46029522/152002763-444c05e1-3a5f-426b-9493-beb99deb9aa3.png)
 
 ### Running Booksidian
-You can run the Booksidian sync by executing the "Booksidian Sync" command or by pressing the "B" in your menu bar. Currently, it always requires a manual command. But if anyone is interested, I could also add an automatic sync sometime.
+You can run the Booksidian sync by executing the "Booksidian Sync" command or by pressing the "B" in your menu bar.
+
+Alternatively, you can set Booksidian to sync automatically by updating the `frequency` in the plugin settings.
+
+### Overwriting Notes
+
+By default, once Booksidian has synced a book from your RSS feed and created a note, that note will never be updated or changed, even if the data related to that book changes within your feed. For example if you sync a book, then give it a rating and sync again, that rating will not be synced to the note.
+
+To have Booksidian overwrite old notes, toggle the `overwrite` plugin setting on. This will cause Booksidian to always replace existing notes for books with new ones. Be careful though - if you've made your own updates to the notes files, they'll be lost on the next sync.
 
 ## Output
 
