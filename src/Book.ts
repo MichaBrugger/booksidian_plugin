@@ -8,6 +8,7 @@ export class Book {
 	id: string;
 	pages: number;
 	title: string;
+	rawTitle: string;
 	series: string;
 	subtitle: string;
 	author: string;
@@ -24,15 +25,23 @@ export class Book {
 		this.id = book.identifiers.$.id;
 		this.pages = parseInt(book.identifiers.num_pages[0]) || undefined;
 		this.title = this.cleanTitle(book.title);
+		this.rawTitle = book.title;
 		this.author = book.author;
 		this.isbn = book.isbn;
 		this.rating = parseInt(book.user_rating) || 0;
 		this.avgRating = parseFloat(book.average_rating) || 0;
-		this.shelves = book.user_shelves;
 		this.dateAdded = this.parseDate(book.user_date_added);
 		this.dateRead = this.parseDate(book.user_read_at);
 		this.datePublished = this.parseDate(book.book_published);
 		this.cover = book.image_url;
+		this.shelves = book.user_shelves;
+
+		// Goodreads doesn't send a shelf value for books on the read shelf.
+		// Infer from either a missing shelf value, or a set dateRead.
+		// Check for presence of read first in case Goodreads decides to include it.
+		if (!this.shelves.toLowerCase().includes("read") && (!this.shelves || this.dateRead)) {
+			this.shelves = this.shelves ? `${this.shelves},read` : 'read';
+		}
 	}
 
 	public getTitle(): string {

@@ -13,7 +13,7 @@ export class Settings extends PluginSettingTab {
 
 	getSelectedCount(): string {
 		const selected = Object.keys(this.getYAML()).length;
-		const total = 12;
+		const total = 13;
 		return `${selected}/${total}`;
 	}
 
@@ -22,11 +22,13 @@ export class Settings extends PluginSettingTab {
 		return this.currentYAML;
 	}
 
-	getDisplay(option: string): string {
+	getDisplay(option: string, label?: string): string {
+		label = label ? label : option;
+
 		if (this.optionIsSelected(option)) {
-			return "🟢 - " + option;
+			return "🟢 - " + label;
 		}
-		return "⚫ - " + option;
+		return "⚫ - " + label;
 	}
 
 	optionIsSelected(option: string): boolean {
@@ -172,7 +174,8 @@ export class Settings extends PluginSettingTab {
 				dropdown
 					.addOption("", `${this.getSelectedCount()}`)
 					.addOption("author", `${this.getDisplay("author")}`)
-					.addOption("title", `${this.getDisplay("title")}`)
+					.addOption("title", `${this.getDisplay("title", "title (formatted for filenames/links)")}`)
+					.addOption("rawTitle", `${this.getDisplay("rawTitle")}`)
 					.addOption("subtitle", `${this.getDisplay("subtitle")}`)
 					.addOption("series", `${this.getDisplay("series")}`)
 					.addOption("cover", `${this.getDisplay("cover")}`)
