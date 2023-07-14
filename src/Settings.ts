@@ -91,6 +91,37 @@ export class Settings extends PluginSettingTab {
 					});
 			});
 
+		new Setting(containerEl)
+			.setName('Configure resync frequency')
+			.setDesc('If not set to manual, Booksidian will resync with Goodreads RSS at configured interval')
+			.addDropdown(dropdown => {
+				dropdown.addOption("0", "Manual");
+				dropdown.addOption("60", "Every 1 hour");
+				dropdown.addOption((12 * 60).toString(), "Every 12 hours");
+				dropdown.addOption((24 * 60).toString(), "Every 24 hours");
+
+				dropdown.setValue(this.plugin.settings.frequency);
+
+				dropdown.onChange((newValue) => {
+					this.plugin.settings.frequency = newValue;
+					this.plugin.saveSettings();
+
+					this.plugin.configureSchedule();
+				})
+			});
+
+		new Setting(containerEl)
+			.setName('Overwrite')
+			.setDesc('When syncing with Goodreads, overwrite existing notes. Modifications to notes will be lost, but changes from Goodreads will now be picked up.')
+			.addToggle(toggle => {
+				toggle.setValue(this.plugin.settings.overwrite);
+
+				toggle.onChange((newValue) => {
+					this.plugin.settings.overwrite = newValue;
+					this.plugin.saveSettings();
+				})
+			})
+
 		containerEl.createEl("h3", { text: "Body" });
 		containerEl.createEl("p", {
 			text: "You can specify the content of the book-note by using {{placeholders}}. You can see the full list of placeholders in the dropdown of the frontmatter. You can choose the frontmatter placeholders you'd like and apply specific formatting to each of them.",

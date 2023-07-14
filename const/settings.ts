@@ -5,6 +5,8 @@ export interface BooksidianSettings {
 	fileName: string;
 	frontmatterDictionary: CurrentYAML;
 	bodyString: string;
+	frequency: string;
+	overwrite: boolean;
 }
 
 export interface CurrentYAML {
@@ -18,4 +20,6 @@ export const DEFAULT_SETTINGS: BooksidianSettings = {
 	goodreadsShelves: "currently-reading",
 	frontmatterDictionary: {},
 	bodyString: "# {{title}}\n\nauthor::[[{{author}}]]",
+	frequency: "0", // manual
+	overwrite: false,
 };

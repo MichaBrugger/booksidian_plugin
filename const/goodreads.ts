@@ -17,11 +17,11 @@ export interface GoodreadsBook {
 	image_url: string;
 }
 
-interface Identifiers {
+export interface Identifiers {
 	$: Book_id;
 	num_pages: string[];
 }
 
-interface Book_id {
+export interface Book_id {
 	id: string;
 }

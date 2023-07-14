@@ -64,13 +64,19 @@ export class Book {
 
 	public async createFile(book: Book, path: string): Promise<void> {
 		const fileName = this.getBody(this.plugin.settings.fileName);
+		const fullName = `${path}/${fileName}.md`;
+
 		try {
-			await this.plugin.app.vault.create(
-				`${path}/${fileName}.md`,
-				book.getContent()
-			);
+			const fs = this.plugin.app.vault.adapter;
+
+			if (fs.exists(fullName) && !this.plugin.settings.overwrite) {
+				return;
+			}
+
+			// Either create new file or overwrite one that exists.
+			await fs.write(fullName, book.getContent());
 		} catch (error) {
-			console.log(book.getTitle() + " already exists!");
+			console.log(`Error writing ${fullName}`, error);
 		}
 	}
 
@@ -79,19 +85,21 @@ export class Book {
 		this.subtitle = "";
 		let series = "";
 
-		if (title.contains("(") && title.contains("#")) {
+		if (title.includes("(") && title.includes("#")) {
 			series = this.getSeries(title);
 		}
 
 		title = title.replace(series, "");
 
-		if (title.contains(":")) {
+		if (title.includes(":")) {
 			this.getSubTitle(title);
 		}
 
 		title = title.split(":")[0];
-		// TODO: make sure there are no titles that fuck up
-		// return title.replace(/[^a-zA-Z0-9 ]/g, "").trim();
+
+		// replace remaining special characters with an empty character
+		title = title.replace(/[&\/\\#,+()$~%.'":*?<>{}|]/g,'');
+
 		return title.trim();
 	}
 

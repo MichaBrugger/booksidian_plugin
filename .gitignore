@@ -1,5 +1,6 @@
 # vscode
-.vscode 
+.vscode
+.devcontainer
 
 # Intellij
 *.iml

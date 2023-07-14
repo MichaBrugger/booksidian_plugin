@@ -5,6 +5,7 @@ import { BooksidianSettings, DEFAULT_SETTINGS } from "const/settings";
 
 export default class Booksidian extends Plugin {
 	settings: BooksidianSettings;
+	scheduleInterval: null | number = null;
 
 	async onload() {
 		await this.loadSettings();
@@ -51,4 +52,18 @@ export default class Booksidian extends Plugin {
 	async saveSettings() {
 		await this.saveData(this.settings);
 	}
+
+	async configureSchedule() {
+    const minutes = parseInt(this.settings.frequency);
+    const milliseconds = minutes * 60 * 1000; // minutes * seconds * milliseconds
+    console.log('Booksidian plugin: setting interval to ', milliseconds, 'milliseconds');
+    window.clearInterval(this.scheduleInterval);
+    this.scheduleInterval = null;
+    if (!milliseconds) {
+      // we got manual option
+      return;
+    }
+    this.scheduleInterval = window.setInterval(() => this.updateLibrary(), milliseconds);
+    this.registerInterval(this.scheduleInterval);
+  }
 }
