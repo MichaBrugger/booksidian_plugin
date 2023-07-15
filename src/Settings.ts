@@ -13,7 +13,7 @@ export class Settings extends PluginSettingTab {
 
 	getSelectedCount(): string {
 		const selected = Object.keys(this.getYAML()).length;
-		const total = 15;
+		const total = 16;
 		return `${selected}/${total}`;
 	}
 
