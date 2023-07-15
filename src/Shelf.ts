@@ -2,6 +2,7 @@ import { rssParser } from "const/rssParser";
 import { GoodreadsBook } from "const/goodreads";
 import { Book } from "./Book";
 import Booksidian from "main";
+import { Notice } from "obsidian";
 
 export class Shelf {
 	path: string;
@@ -45,5 +46,25 @@ export class Shelf {
 
 	public createBookFiles(): void {
 		this.getBooks().map((book) => book.createFile(book, this.path));
+		this.createNotice();
+	}
+
+	private createNotice() {
+		const syncCount: number = this.getBooks().length;
+
+		if (syncCount === 0) {
+			return;
+		}
+		
+		const firstTitle = this.getBooks()[0].rawTitle;
+		let noticeMsg = '';
+
+		if (syncCount === 1) {
+			noticeMsg = `${firstTitle} synced from Goodreads!`;
+		} else {
+			noticeMsg = `${this.getBooks().length} books, including ${firstTitle}, synced from Goodreads!`
+		}
+
+		new Notice(noticeMsg, 5000);
 	}
 }
