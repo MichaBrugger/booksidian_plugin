@@ -177,6 +177,7 @@ export class Settings extends PluginSettingTab {
 					.addOption("title", `${this.getDisplay("title", "title (formatted for filenames/links)")}`)
 					.addOption("rawTitle", `${this.getDisplay("rawTitle")}`)
 					.addOption("subtitle", `${this.getDisplay("subtitle")}`)
+					.addOption("pages", `${this.getDisplay("pages")}`)
 					.addOption("series", `${this.getDisplay("series")}`)
 					.addOption("description", `${this.getDisplay("description")}`)
 					.addOption("cover", `${this.getDisplay("cover")}`)
