@@ -11,6 +11,8 @@ export const rssParser = new Parser({
 			["author_name", "author"],
 			"isbn",
 			"user_rating",
+			"user_review",
+			"book_description",
 			"average_rating",
 			"user_read_at",
 			"user_date_added",

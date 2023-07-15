@@ -4,6 +4,8 @@ export interface GoodreadsBook {
 	link: string;
 	pubDate: string;
 	isbn: string;
+	user_review: string | undefined;
+	book_description: string;
 	user_rating: string;
 	average_rating: string;
 	user_read_at: string;

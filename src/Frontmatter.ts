@@ -2,6 +2,9 @@ import { FRONTMATTER_LINES } from "const/frontmatter";
 import { CurrentYAML } from "const/settings";
 import { Book } from "src/Book";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const yaml = require('js-yaml');
+
 export class Frontmatter {
 	constructor(public currentYAML: CurrentYAML, public book: Book) {}
 
@@ -16,26 +19,21 @@ export class Frontmatter {
 	}
 
 	private getFrontmatterLines(): string {
-		const temp: string[] = [];
+		const output: {[key: string]: number | string | string[]} = {};
+
 		Object.keys(this.currentYAML).forEach((key: string) => {
 			const value = this.currentYAML[key];
 			const [prefix, postfix] = value.split(key);
 
-			// this whole thing is a mess, I'll have to rethink that logic
 			if (key === "shelves") {
-				const newString = this.book.shelves.split(",");
-				temp.push(`${key}: `);
-				for (let i = 0; i < newString.length; i++) {
-					// TODO figure out a way to make this more flexible
-					// temp.push(`${prefix}${newString[i].trim()}${postfix}`);
-					temp.push(`- ${newString[i].trim()}`);
-				}
+				output[key] = this.book.shelves.split(",").sort().map((shelf) => {
+					return `${prefix}${shelf}${postfix}`;
+				});
 			} else {
-				temp.push(
-					`${key}: ${prefix}${this.book[key as keyof Book]}${postfix}`
-				);
+				output[key] = `${prefix}${this.book[key as keyof Book]}${postfix}`;
 			}
 		});
-		return temp.join("\n") + "\n";
+
+		return yaml.dump(output);
 	}
 }
