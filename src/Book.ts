@@ -12,6 +12,7 @@ export class Book {
 	pages: number;
 	title: string;
 	rawTitle: string;
+	fullTitle: string;
 	series: string;
 	subtitle: string;
 	description: string;
@@ -29,8 +30,9 @@ export class Book {
 	constructor(public plugin: Booksidian, book: GoodreadsBook) {
 		this.id = book.identifiers.$.id;
 		this.pages = parseInt(book.identifiers.num_pages[0]) || undefined;
-		this.title = this.cleanTitle(book.title);
+		this.title = this.cleanTitle(book.title, false);
 		this.rawTitle = book.title;
+		this.fullTitle = this.cleanTitle(book.title, true);
 		this.description = this.htmlToMarkdown(book.book_description);
 		this.author = book.author;
 		this.isbn = book.isbn;
@@ -105,7 +107,7 @@ export class Book {
 		}
 	}
 
-	private cleanTitle(title: string) {
+	private cleanTitle(title: string, full: boolean) {
 		this.series = "";
 		this.subtitle = "";
 		let series = "";
@@ -120,7 +122,9 @@ export class Book {
 			this.getSubTitle(title);
 		}
 
-		title = title.split(":")[0];
+		if (full) {
+			title = title.split(":")[0];
+		}
 
 		// replace remaining special characters with an empty character
 		title = title.replace(/[&\/\\#,+()$~%.'":*?<>{}|]/g,'');
