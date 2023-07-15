@@ -13,7 +13,7 @@ export class Settings extends PluginSettingTab {
 
 	getSelectedCount(): string {
 		const selected = Object.keys(this.getYAML()).length;
-		const total = 13;
+		const total = 15;
 		return `${selected}/${total}`;
 	}
 
@@ -178,8 +178,10 @@ export class Settings extends PluginSettingTab {
 					.addOption("rawTitle", `${this.getDisplay("rawTitle")}`)
 					.addOption("subtitle", `${this.getDisplay("subtitle")}`)
 					.addOption("series", `${this.getDisplay("series")}`)
+					.addOption("description", `${this.getDisplay("description")}`)
 					.addOption("cover", `${this.getDisplay("cover")}`)
 					.addOption("isbn", `${this.getDisplay("isbn")}`)
+					.addOption("review",`${this.getDisplay("review")}`)
 					.addOption("rating", `${this.getDisplay("rating")}`)
 					.addOption("avgRating", `${this.getDisplay("avgRating")}`)
 					.addOption("dateAdded", `${this.getDisplay("dateAdded")}`)

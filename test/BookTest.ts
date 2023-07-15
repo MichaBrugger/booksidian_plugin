@@ -19,6 +19,8 @@ const test_book: GoodreadsBook = {
 	pubDate: "01/01/1970",
 	isbn: "0123456789",
 	user_rating: "5",
+  user_review: "Test review",
+  book_description: "Test description",
 	average_rating: "3",
 	user_read_at: "01/01/1970",
 	user_date_added: "01/01/1970",
