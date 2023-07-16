@@ -122,7 +122,7 @@ export class Book {
 			this.getSubTitle(title);
 		}
 
-		if (full) {
+		if (!full) {
 			title = title.split(":")[0];
 		}
 
