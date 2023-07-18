@@ -37,7 +37,7 @@ export default class Booksidian extends Plugin {
 			const shelf = new Shelf(this, _shelf.trim());
 			await shelf.createFolder();
 			await shelf.fetchGoodreadsFeed();
-			shelf.createBookFiles();
+			await shelf.createBookFiles();
 		});
 	}
 

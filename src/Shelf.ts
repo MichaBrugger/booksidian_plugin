@@ -44,8 +44,10 @@ export class Shelf {
 		}
 	}
 
-	public createBookFiles(): void {
-		this.getBooks().map((book) => book.createFile(book, this.path));
+	public async createBookFiles(): Promise<void> {
+		await Promise.all([
+			this.getBooks().map((book) => book.createFile(book, this.path)),
+		]);
 		this.createNotice();
 	}
 
