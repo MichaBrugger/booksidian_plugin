@@ -95,8 +95,8 @@ export class Book {
 
 		try {
 			const fs = this.plugin.app.vault.adapter;
-
-			if (fs.exists(fullName) && !this.plugin.settings.overwrite) {
+			const fileAlreadyExists = await fs.exists(fullName);
+			if (fileAlreadyExists && !this.plugin.settings.overwrite) {
 				return;
 			}
 
