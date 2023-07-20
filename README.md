@@ -51,3 +51,11 @@ sort rating desc
 
 Please check out the amazing work of these two [here](https://github.com/blacksmithgu/obsidian-dataview) and [here](https://github.com/kepano/obsidian-minimal).
 
+### Linking back to Goodreads
+
+The Goodreads book `id` is provided as part of the available data in the plugin. You can create a link back to the Goodreads page for a book by doing:
+
+```
+https://www.goodreads.com/book/show/{{id}}
+```
+
