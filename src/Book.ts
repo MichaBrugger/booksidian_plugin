@@ -71,8 +71,8 @@ export class Book {
 		// Goodreads doesn't send a shelf value for books on the read shelf.
 		// Infer from either a missing shelf value, or a set dateRead.
 		// Check for presence of read first in case Goodreads decides to include it.
-		if (!shelves.toLowerCase().includes("read") && (!shelves || dateRead)) {
-			return shelves ? `${this.shelves},read` : 'read';
+		if (!shelves.split(',').includes("read") && (!shelves || dateRead)) {
+			return shelves ? `${shelves},read` : 'read';
 		}
 
 		return shelves;
