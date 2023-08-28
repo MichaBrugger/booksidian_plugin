@@ -1,19 +1,14 @@
 import { Book } from "src/Book";
 
+// Following rssParser example to avoid issue with: import * as Mustache from 'mustache';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const Mustache = require("mustache");
+
 export class Body {
-	constructor(public currentBody: string, public book: Book) {}
+	constructor(public currentBody: string, public book: Book) { }
 
 	public getBody(): string {
-		for (const key in this.book) {
-			if (this.book.hasOwnProperty(key)) {
-				const value = this.book[key as keyof Book] as string;
-				// replace all instances of the {{key}} in the current body with the value
-				this.currentBody = this.currentBody.replace(
-					new RegExp(`{{${key}}}`, "g"),
-					value
-				);
-			}
-		}
-		return this.currentBody;
+		return Mustache.render(this.currentBody, this.book);
 	}
 }
