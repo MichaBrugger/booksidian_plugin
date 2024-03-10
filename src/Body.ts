@@ -9,6 +9,8 @@ export class Body {
 	constructor(public currentBody: string, public book: Book) { }
 
 	public getBody(): string {
-		return Mustache.render(this.currentBody, this.book);
+		const render = Mustache.render(this.currentBody, this.book) as string;
+
+		return render.replaceAll("&#x2F;", "/");
 	}
 }
