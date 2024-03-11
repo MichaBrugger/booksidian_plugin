@@ -45,10 +45,7 @@ export class Book {
 		this.datePublished = this.parseDate(book.book_published);
 		this.cover = book.image_url;
 		this.shelves = this.getShelves(book.user_shelves, this.dateRead);
-
-		const bookPageLinkPattern = /a href="(?<page_url>.*?)"/;
-		const bookPageLink = book.content.match(bookPageLinkPattern);
-		this.bookPage = bookPageLink.groups.page_url.replace("&amp;", "&");
+		this.bookPage = `https://www.goodreads.com/book/show/${this.id}`;
 	}
 
 	public getTitle(): string {
