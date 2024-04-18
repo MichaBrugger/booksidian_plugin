@@ -6,7 +6,10 @@ import { Book } from "src/Book";
 const Mustache = require("mustache");
 
 export class Body {
-	constructor(public currentBody: string, public book: Book) { }
+	constructor(
+		public currentBody: string,
+		public book: Book,
+	) {}
 
 	public getBody(): string {
 		const render = Mustache.render(this.currentBody, this.book) as string;
