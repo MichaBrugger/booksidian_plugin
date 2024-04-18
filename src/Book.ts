@@ -96,7 +96,7 @@ export class Book {
 
 	public async createFile(book: Book, path: string): Promise<void> {
 		const fileName = this.getBody(this.plugin.settings.fileName);
-		const fullPath = `${path}${fileName}.md`;
+		const fullPath = `${path}/${fileName}.md`;
 
 		try {
 			const fs = this.plugin.app.vault.adapter;
