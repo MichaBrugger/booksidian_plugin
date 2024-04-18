@@ -3,6 +3,7 @@ import { GoodreadsBook } from "const/goodreads";
 import Booksidian from "main";
 import { Body } from "./Body";
 import { Frontmatter } from "./Frontmatter";
+import { isAbsolute } from "path";
 import * as nodeFs from "fs";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -99,17 +100,19 @@ export class Book {
 		const fileName = this.getBody(this.plugin.settings.fileName);
 		const fullPath = `${path}/${fileName}.md`;
 
-		// Early return if file exist and overwrite is disabled.
-		if (nodeFs.existsSync(fullPath) && !this.plugin.settings.overwrite)
-			return;
+		const bookContent = book.getContent();
 
-		try {
-			const fs = this.plugin.app.vault.adapter;
-
-			// Either create new file or overwrite one that exists.
-			await fs.write(fullPath, book.getContent());
-		} catch (error) {
-			console.log(`Error writing ${fullPath}`, error);
+		if (isAbsolute(fullPath)) {
+			nodeFs.writeFile(fullPath, bookContent, (error) => {
+				if (error) console.log(`Error writing ${fullPath}`, error);
+			});
+		} else {
+			try {
+				const fs = this.plugin.app.vault.adapter;
+				await fs.write(fullPath, bookContent);
+			} catch (error) {
+				console.log(`Error writing ${fullPath}`, error);
+			}
 		}
 	}
 
