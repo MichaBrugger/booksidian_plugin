@@ -55,7 +55,10 @@ export class Settings extends PluginSettingTab {
 					.setPlaceholder("")
 					.setValue(this.plugin.settings.targetFolderPath)
 					.onChange(async (value) => {
-						this.plugin.settings.targetFolderPath = value;
+						this.plugin.settings.targetFolderPath = value.replace(
+							/[\\/]+$/g, // matches any trailing slashes
+							"",
+						);
 						await this.plugin.saveSettings();
 					}),
 			);
