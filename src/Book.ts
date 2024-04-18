@@ -96,19 +96,19 @@ export class Book {
 
 	public async createFile(book: Book, path: string): Promise<void> {
 		const fileName = this.getBody(this.plugin.settings.fileName);
-		const fullName = `${path}${fileName}.md`;
+		const fullPath = `${path}${fileName}.md`;
 
 		try {
 			const fs = this.plugin.app.vault.adapter;
-			const fileAlreadyExists = await fs.exists(fullName);
+			const fileAlreadyExists = await fs.exists(fullPath);
 			if (fileAlreadyExists && !this.plugin.settings.overwrite) {
 				return;
 			}
 
 			// Either create new file or overwrite one that exists.
-			await fs.write(fullName, book.getContent());
+			await fs.write(fullPath, book.getContent());
 		} catch (error) {
-			console.log(`Error writing ${fullName}`, error);
+			console.log(`Error writing ${fullPath}`, error);
 		}
 	}
 
