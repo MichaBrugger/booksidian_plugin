@@ -13,7 +13,7 @@ export class Shelf {
 		public plugin: Booksidian,
 		public shelfName: string,
 	) {
-		this.path = `${plugin.settings.targetFolderPath}/`;
+		this.path = `${plugin.settings.targetFolderPath}`;
 		this.url = `${plugin.settings.goodreadsBaseUrl}${shelfName}`;
 	}
 
