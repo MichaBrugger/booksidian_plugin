@@ -16,7 +16,7 @@ export default class Booksidian extends Plugin {
 			"Booksidian Sync",
 			(evt: MouseEvent) => {
 				this.updateLibrary();
-			}
+			},
 		);
 
 		// This adds a simple command that can be triggered anywhere
@@ -45,7 +45,7 @@ export default class Booksidian extends Plugin {
 		this.settings = Object.assign(
 			{},
 			DEFAULT_SETTINGS,
-			await this.loadData()
+			await this.loadData(),
 		);
 	}
 
@@ -54,16 +54,23 @@ export default class Booksidian extends Plugin {
 	}
 
 	async configureSchedule() {
-    const minutes = parseInt(this.settings.frequency);
-    const milliseconds = minutes * 60 * 1000; // minutes * seconds * milliseconds
-    console.log('Booksidian plugin: setting interval to ', milliseconds, 'milliseconds');
-    window.clearInterval(this.scheduleInterval);
-    this.scheduleInterval = null;
-    if (!milliseconds) {
-      // we got manual option
-      return;
-    }
-    this.scheduleInterval = window.setInterval(() => this.updateLibrary(), milliseconds);
-    this.registerInterval(this.scheduleInterval);
-  }
+		const minutes = parseInt(this.settings.frequency);
+		const milliseconds = minutes * 60 * 1000; // minutes * seconds * milliseconds
+		console.log(
+			"Booksidian plugin: setting interval to ",
+			milliseconds,
+			"milliseconds",
+		);
+		window.clearInterval(this.scheduleInterval);
+		this.scheduleInterval = null;
+		if (!milliseconds) {
+			// we got manual option
+			return;
+		}
+		this.scheduleInterval = window.setInterval(
+			() => this.updateLibrary(),
+			milliseconds,
+		);
+		this.registerInterval(this.scheduleInterval);
+	}
 }

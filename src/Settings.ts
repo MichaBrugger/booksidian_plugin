@@ -48,7 +48,7 @@ export class Settings extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Target Folder")
 			.setDesc(
-				"If you leave this empty, the books will be created in the root directory."
+				"If you leave this empty, the books will be created in the root directory.",
 			)
 			.addText((text) =>
 				text
@@ -57,14 +57,14 @@ export class Settings extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.targetFolderPath = value;
 						await this.plugin.saveSettings();
-					})
+					}),
 			);
 
 		// set the base url for all goodreads rss feeds
 		new Setting(containerEl)
 			.setName("RSS Base URL")
 			.setDesc(
-				"Please add your RSS Base URL here (everything before the shelf name)."
+				"Please add your RSS Base URL here (everything before the shelf name).",
 			)
 			.setTooltip("https://www.goodreads.com/ ... &shelf=")
 			.addText((text) =>
@@ -73,14 +73,14 @@ export class Settings extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.goodreadsBaseUrl = value;
 						await this.plugin.saveSettings();
-					})
+					}),
 			);
 
 		// set the goodreads shelves that should be exported
 		new Setting(containerEl)
 			.setName("Your Goodreads Shelves")
 			.setDesc(
-				"Here you can specify which shelves you'd like to export. Please separate the values with a comma and make sure you got the names right. "
+				"Here you can specify which shelves you'd like to export. Please separate the values with a comma and make sure you got the names right. ",
 			)
 			.setTooltip("You can check the proper naming in the RSS url.")
 			.addTextArea((text) => {
@@ -94,9 +94,11 @@ export class Settings extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName('Configure resync frequency')
-			.setDesc('If not set to manual, Booksidian will resync with Goodreads RSS at configured interval')
-			.addDropdown(dropdown => {
+			.setName("Configure resync frequency")
+			.setDesc(
+				"If not set to manual, Booksidian will resync with Goodreads RSS at configured interval",
+			)
+			.addDropdown((dropdown) => {
 				dropdown.addOption("0", "Manual");
 				dropdown.addOption("60", "Every 1 hour");
 				dropdown.addOption((12 * 60).toString(), "Every 12 hours");
@@ -109,20 +111,22 @@ export class Settings extends PluginSettingTab {
 					this.plugin.saveSettings();
 
 					this.plugin.configureSchedule();
-				})
+				});
 			});
 
 		new Setting(containerEl)
-			.setName('Overwrite')
-			.setDesc('When syncing with Goodreads, overwrite existing notes. Modifications to notes will be lost, but changes from Goodreads will now be picked up.')
-			.addToggle(toggle => {
+			.setName("Overwrite")
+			.setDesc(
+				"When syncing with Goodreads, overwrite existing notes. Modifications to notes will be lost, but changes from Goodreads will now be picked up.",
+			)
+			.addToggle((toggle) => {
 				toggle.setValue(this.plugin.settings.overwrite);
 
 				toggle.onChange((newValue) => {
 					this.plugin.settings.overwrite = newValue;
 					this.plugin.saveSettings();
-				})
-			})
+				});
+			});
 
 		containerEl.createEl("h3", { text: "Body" });
 		containerEl.createEl("p", {
@@ -175,23 +179,32 @@ export class Settings extends PluginSettingTab {
 					.addOption("", `${this.getSelectedCount()}`)
 					.addOption("id", `${this.getDisplay("id")}`)
 					.addOption("author", `${this.getDisplay("author")}`)
-					.addOption("title", `${this.getDisplay("title", "title (formatted for filenames/links)")}`)
-					.addOption("fullTitle", `${this.getDisplay("fullTitle", "fullTitle (formatted, includes subtitle)")}`)
+					.addOption(
+						"title",
+						`${this.getDisplay("title", "title (formatted for filenames/links)")}`,
+					)
+					.addOption(
+						"fullTitle",
+						`${this.getDisplay("fullTitle", "fullTitle (formatted, includes subtitle)")}`,
+					)
 					.addOption("rawTitle", `${this.getDisplay("rawTitle")}`)
 					.addOption("subtitle", `${this.getDisplay("subtitle")}`)
 					.addOption("pages", `${this.getDisplay("pages")}`)
 					.addOption("series", `${this.getDisplay("series")}`)
-					.addOption("description", `${this.getDisplay("description")}`)
+					.addOption(
+						"description",
+						`${this.getDisplay("description")}`,
+					)
 					.addOption("cover", `${this.getDisplay("cover")}`)
 					.addOption("isbn", `${this.getDisplay("isbn")}`)
-					.addOption("review",`${this.getDisplay("review")}`)
+					.addOption("review", `${this.getDisplay("review")}`)
 					.addOption("rating", `${this.getDisplay("rating")}`)
 					.addOption("avgRating", `${this.getDisplay("avgRating")}`)
 					.addOption("dateAdded", `${this.getDisplay("dateAdded")}`)
 					.addOption("dateRead", `${this.getDisplay("dateRead")}`)
 					.addOption(
 						"datePublished",
-						`${this.getDisplay("datePublished")}`
+						`${this.getDisplay("datePublished")}`,
 					)
 					.addOption("shelves", `${this.getDisplay("shelves")}`)
 					.addOption("bookPage", `${this.getDisplay("bookPage")}`)
@@ -201,7 +214,7 @@ export class Settings extends PluginSettingTab {
 							: (this.currentYAML[value] = value);
 						await this.plugin.saveSettings();
 						this.display();
-					})
+					}),
 			)
 			.addExtraButton((button) =>
 				button
@@ -209,7 +222,7 @@ export class Settings extends PluginSettingTab {
 						this.display();
 					})
 					.setIcon("sync")
-					.setTooltip("Refresh Previews")
+					.setTooltip("Refresh Previews"),
 			);
 
 		Object.keys(this.currentYAML).forEach((key) => {
@@ -223,7 +236,7 @@ export class Settings extends PluginSettingTab {
 								if (value.startsWith("[[")) {
 									this.currentYAML[key] = value.replace(
 										/[[\]]/g,
-										""
+										"",
 									);
 								} else {
 									this.currentYAML[key] = "[[" + value + "]]";
@@ -231,7 +244,7 @@ export class Settings extends PluginSettingTab {
 								await this.plugin.saveSettings();
 								this.display();
 							})
-							.setIcon("bracket-glyph").setTooltip
+							.setIcon("bracket-glyph").setTooltip,
 				)
 				.addText((text) =>
 					text
@@ -240,7 +253,7 @@ export class Settings extends PluginSettingTab {
 						.onChange(async (value) => {
 							this.currentYAML[key] = value;
 							await this.plugin.saveSettings();
-						})
+						}),
 				)
 				.addExtraButton((button) =>
 					button
@@ -250,7 +263,7 @@ export class Settings extends PluginSettingTab {
 							this.display();
 						})
 						.setIcon("trash")
-						.setTooltip("Remove")
+						.setTooltip("Remove"),
 				);
 		});
 	}

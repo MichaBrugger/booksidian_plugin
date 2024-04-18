@@ -9,7 +9,10 @@ export class Shelf {
 	url: string;
 	books: Book[] = [];
 
-	constructor(public plugin: Booksidian, public shelfName: string) {
+	constructor(
+		public plugin: Booksidian,
+		public shelfName: string,
+	) {
 		this.path = `${plugin.settings.targetFolderPath}/`;
 		this.url = `${plugin.settings.goodreadsBaseUrl}${shelfName}`;
 	}
@@ -57,14 +60,14 @@ export class Shelf {
 		if (syncCount === 0) {
 			return;
 		}
-		
+
 		const firstTitle = this.getBooks()[0].rawTitle;
-		let noticeMsg = '';
+		let noticeMsg = "";
 
 		if (syncCount === 1) {
 			noticeMsg = `${firstTitle} synced from Goodreads!`;
 		} else {
-			noticeMsg = `${this.getBooks().length} books, including ${firstTitle}, synced from Goodreads!`
+			noticeMsg = `${this.getBooks().length} books, including ${firstTitle}, synced from Goodreads!`;
 		}
 
 		new Notice(noticeMsg, 5000);
