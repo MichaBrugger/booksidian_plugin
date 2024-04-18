@@ -3,6 +3,7 @@ import { GoodreadsBook } from "const/goodreads";
 import Booksidian from "main";
 import { Body } from "./Body";
 import { Frontmatter } from "./Frontmatter";
+import * as nodeFs from "fs";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const TurndownService = require("turndown");
@@ -98,12 +99,12 @@ export class Book {
 		const fileName = this.getBody(this.plugin.settings.fileName);
 		const fullPath = `${path}/${fileName}.md`;
 
+		// Early return if file exist and overwrite is disabled.
+		if (nodeFs.existsSync(fullPath) && !this.plugin.settings.overwrite)
+			return;
+
 		try {
 			const fs = this.plugin.app.vault.adapter;
-			const fileAlreadyExists = await fs.exists(fullPath);
-			if (fileAlreadyExists && !this.plugin.settings.overwrite) {
-				return;
-			}
 
 			// Either create new file or overwrite one that exists.
 			await fs.write(fullPath, book.getContent());
