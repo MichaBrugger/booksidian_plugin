@@ -48,14 +48,17 @@ export class Settings extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Target Folder")
 			.setDesc(
-				"If you leave this empty, the books will be created in the root directory.",
+				"Path to where to store the book notes. Can be either a relative path within the vault, or absolute outside of the vault. If you leave this empty, the books will be created in the root directory.",
 			)
 			.addText((text) =>
 				text
 					.setPlaceholder("")
 					.setValue(this.plugin.settings.targetFolderPath)
 					.onChange(async (value) => {
-						this.plugin.settings.targetFolderPath = value;
+						this.plugin.settings.targetFolderPath = value.replace(
+							/[\\/]+$/g, // matches any trailing slashes
+							"",
+						);
 						await this.plugin.saveSettings();
 					}),
 			);

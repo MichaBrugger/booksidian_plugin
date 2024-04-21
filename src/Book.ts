@@ -3,6 +3,8 @@ import { GoodreadsBook } from "const/goodreads";
 import Booksidian from "main";
 import { Body } from "./Body";
 import { Frontmatter } from "./Frontmatter";
+import { isAbsolute } from "path";
+import * as nodeFs from "fs";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const TurndownService = require("turndown");
@@ -96,19 +98,21 @@ export class Book {
 
 	public async createFile(book: Book, path: string): Promise<void> {
 		const fileName = this.getBody(this.plugin.settings.fileName);
-		const fullName = `${path}${fileName}.md`;
+		const fullPath = `${path}/${fileName}.md`;
 
-		try {
-			const fs = this.plugin.app.vault.adapter;
-			const fileAlreadyExists = await fs.exists(fullName);
-			if (fileAlreadyExists && !this.plugin.settings.overwrite) {
-				return;
+		const bookContent = book.getContent();
+
+		if (isAbsolute(fullPath)) {
+			nodeFs.writeFile(fullPath, bookContent, (error) => {
+				if (error) console.log(`Error writing ${fullPath}`, error);
+			});
+		} else {
+			try {
+				const fs = this.plugin.app.vault.adapter;
+				await fs.write(fullPath, bookContent);
+			} catch (error) {
+				console.log(`Error writing ${fullPath}`, error);
 			}
-
-			// Either create new file or overwrite one that exists.
-			await fs.write(fullName, book.getContent());
-		} catch (error) {
-			console.log(`Error writing ${fullName}`, error);
 		}
 	}
 

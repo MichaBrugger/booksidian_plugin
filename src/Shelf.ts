@@ -3,6 +3,8 @@ import { GoodreadsBook } from "const/goodreads";
 import { Book } from "./Book";
 import Booksidian from "main";
 import { Notice } from "obsidian";
+import * as nodeFs from "fs";
+import { isAbsolute } from "path";
 
 export class Shelf {
 	path: string;
@@ -13,7 +15,7 @@ export class Shelf {
 		public plugin: Booksidian,
 		public shelfName: string,
 	) {
-		this.path = `${plugin.settings.targetFolderPath}/`;
+		this.path = `${plugin.settings.targetFolderPath}`;
 		this.url = `${plugin.settings.goodreadsBaseUrl}${shelfName}`;
 	}
 
@@ -27,11 +29,17 @@ export class Shelf {
 
 	// create folder for each shelf (based on targetFolderPath)
 	public async createFolder(): Promise<void> {
-		try {
-			await this.plugin.app.vault.createFolder(this.path);
-		} catch (e) {
-			if (e.message.includes("already exists")) return;
-			console.warn(e);
+		if (isAbsolute(this.path)) {
+			nodeFs.mkdir(this.path, { recursive: true }, (err) => {
+				if (err) console.log(err);
+			});
+		} else {
+			try {
+				await this.plugin.app.vault.createFolder(this.path);
+			} catch (e) {
+				if (e.message.includes("already exists")) return;
+				console.warn(e);
+			}
 		}
 	}
 
