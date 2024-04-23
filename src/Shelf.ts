@@ -16,7 +16,7 @@ export class Shelf {
 		public shelfName: string,
 	) {
 		this.path = `${plugin.settings.targetFolderPath}`;
-		this.url = `${plugin.settings.goodreadsBaseUrl}${shelfName}`;
+		this.url = `${plugin.settings.goodreadsBaseUrl}${shelfName.toLocaleLowerCase()}`;
 	}
 
 	private setBook(book: Book): void {
