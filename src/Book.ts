@@ -97,6 +97,8 @@ export class Book {
 	}
 
 	public async createFile(book: Book, path: string): Promise<void> {
+		if (!this.plugin.settings.overwrite) return;
+
 		const fileName = this.getBody(this.plugin.settings.fileName);
 		const fullPath = `${path}/${fileName}.md`;
 
