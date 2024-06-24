@@ -97,10 +97,11 @@ export class Book {
 	}
 
 	public async createFile(book: Book, path: string): Promise<void> {
-		if (!this.plugin.settings.overwrite) return;
-
 		const fileName = this.getBody(this.plugin.settings.fileName);
 		const fullPath = `${path}/${fileName}.md`;
+
+		const file = this.plugin.app.vault.getFileByPath(fullPath);
+		if (file && !this.plugin.settings.overwrite) return;
 
 		const bookContent = book.getContent();
 
