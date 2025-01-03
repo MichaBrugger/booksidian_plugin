@@ -40,10 +40,10 @@ export class Book {
 		this.title = this.cleanTitle(book.title, false);
 		this.rawTitle = book.title;
 		this.fullTitle = this.cleanTitle(book.title, true);
-		this.description = he.decode(this.htmlToMarkdown(book.book_description));
+		this.description = this.htmlToMarkdown(book.book_description);
 		this.author = book.author;
 		this.isbn = book.isbn;
-		this.review = he.decode(this.htmlToMarkdown(book.user_review || ""));
+		this.review = this.htmlToMarkdown(book.user_review || "");
 		this.rating = parseInt(book.user_rating) || 0;
 		this.avgRating = parseFloat(book.average_rating) || 0;
 		this.dateAdded = this.parseDate(book.user_date_added);

@@ -1,4 +1,5 @@
 import { Book } from "src/Book";
+import * as he from "he";
 
 // Following rssParser example to avoid issue with: import * as Mustache from 'mustache';
 
@@ -13,7 +14,8 @@ export class Body {
 
 	public getBody(): string {
 		const render = Mustache.render(this.currentBody, this.book) as string;
-		return render.replace(/&#x2F;/g, "/");
+		return he.decode(render);
+		// return render.replace(/&#x2F;/g, "/");
 		// return render.replaceAll("&#x2F;", "/");		
 	}
 }
