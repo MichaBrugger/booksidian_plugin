@@ -11,7 +11,7 @@ const TurndownService = require("turndown");
 
 export class Book {
 	id: string;
-	pages: number;
+	pages: number | undefined;
 	title: string;
 	rawTitle: string;
 	fullTitle: string;
@@ -31,7 +31,7 @@ export class Book {
 	bookPage: string;
 
 	constructor(
-		public plugin: Booksidian,
+		public plugin: Booksidian ,
 		book: GoodreadsBook,
 	) {
 		this.id = book.identifiers.$.id;
@@ -39,10 +39,10 @@ export class Book {
 		this.title = this.cleanTitle(book.title, false);
 		this.rawTitle = book.title;
 		this.fullTitle = this.cleanTitle(book.title, true);
-		this.description = this.htmlToMarkdown(book.book_description);
+		this.description = this.decodeHtmlEntities(this.htmlToMarkdown(book.book_description));
 		this.author = book.author;
 		this.isbn = book.isbn;
-		this.review = this.htmlToMarkdown(book.user_review || "");
+		this.review = this.decodeHtmlEntities(this.htmlToMarkdown(book.user_review || ""));
 		this.rating = parseInt(book.user_rating) || 0;
 		this.avgRating = parseFloat(book.average_rating) || 0;
 		this.dateAdded = this.parseDate(book.user_date_added);
@@ -57,21 +57,29 @@ export class Book {
 		return this.title;
 	}
 
-	public getContent(): string {
+	public getContent(): {frontmatter: string, body: string} | Error {
 		const set = this.plugin.settings;
 		try {
-			return (
-				this.getFrontMatter(set.frontmatterDictionary) +
-				this.getBody(set.bodyString)
-			);
+			return {
+				frontmatter: this.getFrontMatter(set.frontmatterDictionary) ,
+				body: this.getBody(set.bodyString)
+			};
 		} catch (error) {
 			console.log(error);
+			return error;
 		}
 	}
 
 	private htmlToMarkdown(html: string) {
 		const turndownService = new TurndownService();
 		return turndownService.turndown(html);
+	}
+
+	private decodeHtmlEntities(text: string): string {
+		return new DOMParser()
+			.parseFromString(text, 'text/html')
+			.documentElement
+			.textContent;
 	}
 
 	private getShelves(shelves: string, dateRead: string): string {
@@ -103,7 +111,26 @@ export class Book {
 		const file = this.plugin.app.vault.getFileByPath(fullPath);
 		if (file && !this.plugin.settings.overwrite) return;
 
-		const bookContent = book.getContent();
+		let bookContent: string;
+
+		const content = book.getContent();
+			if (content instanceof Error) {
+				throw content;
+				return;
+			}
+
+		
+		if (this.plugin.settings.onlyFrontmatter) {
+			const endPos = this.plugin.app.metadataCache.getFileCache(file)?.frontmatterPosition?.end.offset;
+
+			const oldContent = await this.plugin.app.vault.read(file)
+			
+			
+			bookContent = content.frontmatter + oldContent.substring(endPos);
+
+		} else {
+			bookContent = content.frontmatter + content.body;
+		}
 
 		if (isAbsolute(fullPath)) {
 			nodeFs.writeFile(fullPath, bookContent, (error) => {
@@ -139,6 +166,7 @@ export class Book {
 		}
 
 		// replace remaining special characters with an empty character
+		// eslint-disable-next-line no-useless-escape
 		title = title.replace(/[&\/\\#,+()$~%.'":*?<>{}|]/g, "");
 
 		return title.trim();

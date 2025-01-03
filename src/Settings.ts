@@ -131,6 +131,20 @@ export class Settings extends PluginSettingTab {
 				});
 			});
 
+			new Setting(containerEl)
+			.setName("Only overwrite frontmatter")
+			.setDesc(
+				"If 'Overwrite' is enabled, only overwrite the frontmatter of existing notes. This will keep the body of the note intact.",
+			)
+			.addToggle((toggle) => {
+				toggle.setValue(this.plugin.settings.onlyFrontmatter);
+
+				toggle.onChange((newValue) => {
+					this.plugin.settings.onlyFrontmatter = newValue;
+					this.plugin.saveSettings();
+				});
+			});
+
 		containerEl.createEl("h3", { text: "Body" });
 		containerEl.createEl("p", {
 			text: "You can specify the content of the book-note by using {{placeholders}}. You can see the full list of placeholders in the dropdown of the frontmatter. You can choose the frontmatter placeholders you'd like and apply specific formatting to each of them.",

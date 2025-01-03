@@ -13,7 +13,7 @@ export class Body {
 
 	public getBody(): string {
 		const render = Mustache.render(this.currentBody, this.book) as string;
-
-		return render.replaceAll("&#x2F;", "/");
+		return render.replace(/&#x2F;/g, "/");
+		// return render.replaceAll("&#x2F;", "/");		
 	}
 }
