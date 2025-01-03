@@ -5,6 +5,7 @@ import { Body } from "./Body";
 import { Frontmatter } from "./Frontmatter";
 import { isAbsolute } from "path";
 import * as nodeFs from "fs";
+import * as he from "he";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const TurndownService = require("turndown");
@@ -39,10 +40,10 @@ export class Book {
 		this.title = this.cleanTitle(book.title, false);
 		this.rawTitle = book.title;
 		this.fullTitle = this.cleanTitle(book.title, true);
-		this.description = this.decodeHtmlEntities(this.htmlToMarkdown(book.book_description));
+		this.description = he.decode(this.htmlToMarkdown(book.book_description));
 		this.author = book.author;
 		this.isbn = book.isbn;
-		this.review = this.decodeHtmlEntities(this.htmlToMarkdown(book.user_review || ""));
+		this.review = he.decode(this.htmlToMarkdown(book.user_review || ""));
 		this.rating = parseInt(book.user_rating) || 0;
 		this.avgRating = parseFloat(book.average_rating) || 0;
 		this.dateAdded = this.parseDate(book.user_date_added);
@@ -75,12 +76,7 @@ export class Book {
 		return turndownService.turndown(html);
 	}
 
-	private decodeHtmlEntities(text: string): string {
-		return new DOMParser()
-			.parseFromString(text, 'text/html')
-			.documentElement
-			.textContent;
-	}
+
 
 	private getShelves(shelves: string, dateRead: string): string {
 		// Goodreads doesn't send a shelf value for books on the read shelf.
