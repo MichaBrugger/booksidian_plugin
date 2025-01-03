@@ -5,7 +5,7 @@ import { Body } from "./Body";
 import { Frontmatter } from "./Frontmatter";
 import { isAbsolute } from "path";
 import * as nodeFs from "fs";
-import * as he from "he";
+// import * as he from "he";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const TurndownService = require("turndown");
@@ -112,7 +112,6 @@ export class Book {
 		const content = book.getContent();
 			if (content instanceof Error) {
 				throw content;
-				return;
 			}
 
 		
@@ -122,7 +121,7 @@ export class Book {
 			const oldContent = await this.plugin.app.vault.read(file)
 			
 			
-			bookContent = content.frontmatter + oldContent.substring(endPos);
+			bookContent = content.frontmatter + oldContent.substring(endPos+1);
 
 		} else {
 			bookContent = content.frontmatter + content.body;
