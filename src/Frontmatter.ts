@@ -1,9 +1,9 @@
-import { FRONTMATTER_LINES } from "const/frontmatter";
 import { CurrentYAML } from "const/settings";
 import { Book } from "src/Book";
+import * as yaml from "js-yaml";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const yaml = require("js-yaml");
+
+const FRONTMATTER_LINES = "---";
 
 export class Frontmatter {
 	constructor(

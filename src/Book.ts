@@ -1,14 +1,18 @@
 import { CurrentYAML } from "const/settings";
 import { GoodreadsBook } from "const/goodreads";
 import Booksidian from "main";
-import { Body } from "./Body";
 import { Frontmatter } from "./Frontmatter";
 import { isAbsolute } from "path";
 import * as nodeFs from "fs";
-// import * as he from "he";
+import * as Mustache from "mustache";
+import * as he from "he";
+import * as TurndownService from "turndown";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const TurndownService = require("turndown");
+
+// type Body = {
+// 	currentBody: string;
+// 	book: Book;
+// }
 
 export class Book {
 	id: string;
@@ -90,7 +94,9 @@ export class Book {
 	}
 
 	private getBody(currentBody: string): string {
-		return new Body(currentBody, this).getBody();
+		// return new Body(currentBody, this).getBody();
+		const render = Mustache.render(currentBody, this) as string;
+		return he.decode(render);
 	}
 
 	private getFrontMatter(currentYAML: CurrentYAML): string {
