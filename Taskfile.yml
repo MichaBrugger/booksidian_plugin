@@ -19,3 +19,8 @@ tasks:
   patch:
     cmds:
       - npm version patch
+  git:
+    cmds:
+      - git add .
+      - git commit -m "task"
+      - git push
