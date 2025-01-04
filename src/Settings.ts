@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
+import { App, Notice, PluginSettingTab, Setting } from "obsidian";
 import Booksidian from "../main";
 import { DEFAULT_SETTINGS } from "../const/settings";
 import { ToggleComponent } from "obsidian";
@@ -141,12 +141,12 @@ export class Settings extends PluginSettingTab {
 					// Get new shelves from textarea
 					const valueArray = value.split("\n").map((shelf) => shelf.trim()).filter((shelf) => shelf.length > 0);
 					
-					const shelfArray = [... new Set(valueArray)]
+					const textArray = [... new Set(valueArray)]
 					
 					
 					for (const ds of DEFAULT_SETTINGS.goodreadsShelves){
 						const toggler = this.togglers.find((toggler) => toggler.label === ds);
-						if (shelfArray.includes(ds) ){
+						if (textArray.includes(ds) ){
 							
 							if (toggler.toggle.getValue() === false){
 								toggler.toggle.setValue(true);
@@ -154,9 +154,10 @@ export class Settings extends PluginSettingTab {
 					} 
 				}
 
-				const defaultShelves = this.plugin.settings.goodreadsShelves.filter((shelf) => !DEFAULT_SETTINGS.goodreadsShelves.includes(shelf));
+				const prevDefaultShelves = this.plugin.settings.goodreadsShelves.filter((shelf) => DEFAULT_SETTINGS.goodreadsShelves.includes(shelf));
+				console.log("PREV:",prevDefaultShelves);
 					
-				const newArray = [...valueArray, ...defaultShelves]
+				const newArray = [...textArray, ...prevDefaultShelves]
 
 				// Remove duplicates
 				const newShelves = [...new Set(newArray)]
@@ -172,6 +173,8 @@ export class Settings extends PluginSettingTab {
 					// this.plugin.settings.goodreadsShelves.push(...newShelves);
 					
 					await this.plugin.saveSettings();
+
+					new Notice("Goodreads shelves updated");
 				}
 
 				
