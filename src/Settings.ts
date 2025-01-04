@@ -1,15 +1,25 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import Booksidian from "../main";
 import { DEFAULT_SETTINGS } from "../const/settings";
+import { ToggleComponent } from "obsidian";
+
+// Toggler type with a string and a ToggleComponent
+type Toggler = {
+	label: string;
+	toggle: ToggleComponent;
+};
+
 
 export class Settings extends PluginSettingTab {
 	plugin: Booksidian;
 	currentYAML: { [key: string]: string };
+	togglers: Toggler[];
 
 	constructor(app: App, plugin: Booksidian) {
 		super(app, plugin);
 		this.plugin = plugin;
 		this.currentYAML = plugin.settings.frontmatterDictionary;
+		this.togglers = [];
 	}
 
 	getSelectedCount(): string {
@@ -83,20 +93,27 @@ export class Settings extends PluginSettingTab {
 
 		
 		for (const shelf of DEFAULT_SETTINGS.goodreadsShelves){
-		new Setting(containerEl).addToggle((toggle) => {
-			toggle.setValue(this.plugin.settings.goodreadsShelves.includes(shelf));
+			new Setting(containerEl).addToggle((toggle) => {
+				this.togglers.push({label: shelf, toggle: toggle});
 
-			toggle.onChange((newValue) => {
-				if (newValue) {
-					this.plugin.settings.goodreadsShelves.push(shelf);
-				} else {
-					this.plugin.settings.goodreadsShelves = this.plugin.settings.goodreadsShelves.filter(
-						(s) => s !== shelf,
-					);
-				}
-				this.plugin.saveSettings();
-			});
-		}).setName(shelf)//.setDesc(shelf);
+				toggle.setValue(this.plugin.settings.goodreadsShelves.includes(shelf));
+
+				toggle.onChange(async (newValue) => {
+					const hasValue: boolean = this.plugin.settings.goodreadsShelves.includes(shelf);
+					if (newValue) {
+						if(!hasValue) {
+						this.plugin.settings.goodreadsShelves.push(shelf);
+						}
+					} else {
+						if (hasValue){
+							this.plugin.settings.goodreadsShelves = this.plugin.settings.goodreadsShelves.filter(
+								(s: string) => {return s !== shelf}
+						);
+						}		
+					}
+					await this.plugin.saveSettings();
+				});
+			}).setName(shelf)//.setDesc(shelf);
 	}
 
 
@@ -107,9 +124,6 @@ export class Settings extends PluginSettingTab {
 				"Here you can specify which shelves you'd like to export. Please separate the values with a NEWLINE and make sure you got the names right. ",
 			)
 			.setTooltip("You can check the proper naming in the RSS url.")
-			
-
-
 			.addTextArea((text) => {
 				text.inputEl.rows = 6;
 				text.setPlaceholder("Your Shelves")
@@ -117,18 +131,39 @@ export class Settings extends PluginSettingTab {
 					this.plugin.settings.goodreadsShelves
 						.filter((shelf) => !DEFAULT_SETTINGS.goodreadsShelves.includes(shelf))
 						.join("\n")
-				)
-				.onChange(async (value) => {
-		
+				);
+				text.onChange(async (value) => {
 					// Get new shelves from textarea
-					const newShelves = value.split("\n").filter(shelf => shelf.trim());
+					const valueArray = value.split("\n").map((shelf) => shelf.trim());
 					
-					// Remove old custom shelves
-					this.plugin.settings.goodreadsShelves = this.plugin.settings.goodreadsShelves
-						.filter(shelf => DEFAULT_SETTINGS.goodreadsShelves.includes(shelf));
+					const newArray = [...valueArray, ...this.plugin.settings.goodreadsShelves]
+
+					// Remove duplicates
+					const newShelves = [...new Set(newArray)]
 					
+					
+				
+					for (const shelf of DEFAULT_SETTINGS.goodreadsShelves){
+						const toggler = this.togglers.find((toggler) => toggler.label === shelf);
+						if (newShelves.includes(shelf) ){
+							
+							if (toggler.toggle.getValue() === false){
+								toggler.toggle.setValue(true);
+							} 
+					} else {
+						if (toggler.toggle.getValue() === true){
+							toggler.toggle.setValue(false);
+						}
+					}
+				}
+
+
+					const customShelves = newArray.filter((shelf) => !DEFAULT_SETTINGS.goodreadsShelves.includes(shelf));
+					text.setValue(customShelves.join("\n"));
+
+					this.plugin.settings.goodreadsShelves = newShelves;
 					// Add new shelves
-					this.plugin.settings.goodreadsShelves.push(...newShelves);
+					// this.plugin.settings.goodreadsShelves.push(...newShelves);
 					
 					await this.plugin.saveSettings();
 				});
