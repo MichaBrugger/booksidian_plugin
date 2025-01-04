@@ -16,3 +16,6 @@ tasks:
   build:
     cmds:
       - npm run build
+  patch:
+    cmds:
+      - npm version patch
