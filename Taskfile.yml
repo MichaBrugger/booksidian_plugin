@@ -3,12 +3,17 @@
 version: '3'
 
 vars:
-  GREETING: Hello, World!
+  DIR_PLUGIN: C:\PROJECTS\Obsidian\dev7\.obsidian\plugins\booksidian-plugin
 
 tasks:
   default:
-    cmds:
-      - npm run build
+    tasks:
+      - echo "building and copying"
+      - build
+      - copy
   copy:
     cmds:
-      - xcopy "{{.USER_WORKING_DIR}}\main.js" "C:\PROJECTS\Obsidian\dev7\.obsidian\plugins\booksidian-plugin\main.js" /Y
+      - xcopy "{{.USER_WORKING_DIR}}\main.js" "{{.DIR_PLUGIN}}\main.js" /Y
+  build:
+    cmds:
+      - npm run build
