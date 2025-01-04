@@ -46,6 +46,10 @@ export class Settings extends PluginSettingTab {
 		return this.currentYAML.hasOwnProperty(option);
 	}
 
+	message(): void {
+		new Notice("Goodreads shelves updated!\n"+this.plugin.settings.goodreadsShelves.join("\n"));
+	}
+
 	display(): void {
 		const { containerEl } = this;
 
@@ -114,6 +118,7 @@ export class Settings extends PluginSettingTab {
 
 
 					await this.plugin.saveSettings();
+					this.message();
 				});
 			}).setName(shelf)//.setDesc(shelf);
 	}
@@ -170,7 +175,7 @@ export class Settings extends PluginSettingTab {
 					
 					await this.plugin.saveSettings();
 
-					new Notice("Goodreads shelves updated");
+					this.message();
 				}
 
 				
