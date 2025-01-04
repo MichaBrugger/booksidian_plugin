@@ -1,7 +1,7 @@
 {
 	"id": "booksidian-plugin",
 	"name": "Booksidian",
-	"version": "0.6.0",
+	"version": "0.6.1",
 	"minAppVersion": "1.7.0",
 	"description": "Connect Obsidian to your Goodreads.",
 	"author": "Micha Brugger and Zachary Wright",
