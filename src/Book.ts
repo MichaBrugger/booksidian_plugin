@@ -4,9 +4,17 @@ import Booksidian from "main";
 import { Frontmatter } from "./Frontmatter";
 import { isAbsolute } from "path";
 import * as nodeFs from "fs";
-import * as Mustache from "mustache";
-import * as he from "he";
-import * as TurndownService from "turndown";
+// import * as Mustache from "mustache";
+// import * as he from "he";
+// import * as TurndownService from "turndown";
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires 
+const he = require("he");
+// eslint-disable-next-line @typescript-eslint/no-var-requires 
+const TurndownService = require("turndown");
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const Mustache = require("mustache");
 
 
 // type Body = {
