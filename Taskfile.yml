@@ -1,0 +1,14 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  GREETING: Hello, World!
+
+tasks:
+  default:
+    cmds:
+      - npm run build
+  copy:
+    cmds:
+      - xcopy "{{.USER_WORKING_DIR}}\main.js" "C:\PROJECTS\Obsidian\dev7\.obsidian\plugins\booksidian-plugin\main.js" /Y

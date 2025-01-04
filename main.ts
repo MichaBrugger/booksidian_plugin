@@ -33,7 +33,7 @@ export default class Booksidian extends Plugin {
 	}
 
 	updateLibrary() {
-		this.settings.goodreadsShelves.split(",").forEach(async (_shelf) => {
+		this.settings.goodreadsShelves.forEach(async (_shelf) => {
 			const shelf = new Shelf(this, _shelf.trim());
 			await shelf.createFolder();
 			await shelf.fetchGoodreadsFeed();

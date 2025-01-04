@@ -1,5 +1,6 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import Booksidian from "../main";
+import { DEFAULT_SETTINGS } from "../const/settings";
 
 export class Settings extends PluginSettingTab {
 	plugin: Booksidian;
@@ -78,22 +79,59 @@ export class Settings extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					}),
 			);
+		new Setting(containerEl).setHeading().setName("Goodreads Shelves");
+
+		
+		for (const shelf of DEFAULT_SETTINGS.goodreadsShelves){
+		new Setting(containerEl).addToggle((toggle) => {
+			toggle.setValue(this.plugin.settings.goodreadsShelves.includes(shelf));
+
+			toggle.onChange((newValue) => {
+				if (newValue) {
+					this.plugin.settings.goodreadsShelves.push(shelf);
+				} else {
+					this.plugin.settings.goodreadsShelves = this.plugin.settings.goodreadsShelves.filter(
+						(s) => s !== shelf,
+					);
+				}
+				this.plugin.saveSettings();
+			});
+		}).setName(shelf)//.setDesc(shelf);
+	}
+
 
 		// set the goodreads shelves that should be exported
 		new Setting(containerEl)
-			.setName("Your Goodreads Shelves")
+			.setName("Your Custom Goodreads Shelves")
 			.setDesc(
-				"Here you can specify which shelves you'd like to export. Please separate the values with a comma and make sure you got the names right. ",
+				"Here you can specify which shelves you'd like to export. Please separate the values with a NEWLINE and make sure you got the names right. ",
 			)
 			.setTooltip("You can check the proper naming in the RSS url.")
+			
+
+
 			.addTextArea((text) => {
 				text.inputEl.rows = 6;
 				text.setPlaceholder("Your Shelves")
-					.setValue(this.plugin.settings.goodreadsShelves)
-					.onChange(async (value) => {
-						this.plugin.settings.goodreadsShelves = value;
-						await this.plugin.saveSettings();
-					});
+				.setValue(
+					this.plugin.settings.goodreadsShelves
+						.filter((shelf) => !DEFAULT_SETTINGS.goodreadsShelves.includes(shelf))
+						.join("\n")
+				)
+				.onChange(async (value) => {
+		
+					// Get new shelves from textarea
+					const newShelves = value.split("\n").filter(shelf => shelf.trim());
+					
+					// Remove old custom shelves
+					this.plugin.settings.goodreadsShelves = this.plugin.settings.goodreadsShelves
+						.filter(shelf => DEFAULT_SETTINGS.goodreadsShelves.includes(shelf));
+					
+					// Add new shelves
+					this.plugin.settings.goodreadsShelves.push(...newShelves);
+					
+					await this.plugin.saveSettings();
+				});
 			});
 
 		new Setting(containerEl)
