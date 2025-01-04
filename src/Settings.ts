@@ -93,7 +93,7 @@ export class Settings extends PluginSettingTab {
 
 		
 		for (const shelf of DEFAULT_SETTINGS.goodreadsShelves){
-			console.log(shelf);
+
 			new Setting(containerEl).addToggle((toggle) => {
 				this.togglers.push({label: shelf, toggle: toggle});
 
@@ -112,7 +112,6 @@ export class Settings extends PluginSettingTab {
 						}		
 					}
 
-					console.log(this.plugin.settings.goodreadsShelves);
 
 					await this.plugin.saveSettings();
 				});
@@ -155,17 +154,14 @@ export class Settings extends PluginSettingTab {
 				}
 
 				const prevDefaultShelves = this.plugin.settings.goodreadsShelves.filter((shelf) => DEFAULT_SETTINGS.goodreadsShelves.includes(shelf));
-				console.log("PREV:",prevDefaultShelves);
 					
 				const newArray = [...textArray, ...prevDefaultShelves]
 
 				// Remove duplicates
 				const newShelves = [...new Set(newArray)]
-				console.log("SET:",newShelves);
 
 				const customShelves = newShelves.filter((shelf) => !DEFAULT_SETTINGS.goodreadsShelves.includes(shelf));
 
-				console.log("WHAT",customShelves)
 					text.setValue(customShelves.join("\n"));
 
 					this.plugin.settings.goodreadsShelves = newShelves;
@@ -179,14 +175,12 @@ export class Settings extends PluginSettingTab {
 
 				
 				text.inputEl.addEventListener("blur", async () => {
-					console.log("blur");
 					await textFiledHandler();
 				});
 
 				text.inputEl.addEventListener("keydown", async (event) => {
 					// If the key is Enter
 					if (event.key === "Enter") {
-					console.log("Enter");
 					await textFiledHandler();
 				}
 				});
