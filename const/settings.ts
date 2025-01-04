@@ -25,3 +25,4 @@ export const DEFAULT_SETTINGS: BooksidianSettings = {
 	overwrite: false,
 	onlyFrontmatter: false,
 };
+

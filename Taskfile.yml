@@ -7,10 +7,9 @@ vars:
 
 tasks:
   default:
-    tasks:
-      - echo "building and copying"
-      - build
-      - copy
+    cmds:
+      - task: build
+      - task: copy
   copy:
     cmds:
       - xcopy "{{.USER_WORKING_DIR}}\main.js" "{{.DIR_PLUGIN}}\main.js" /Y
