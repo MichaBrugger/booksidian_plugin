@@ -75,7 +75,7 @@ export class Settings extends PluginSettingTab {
 					.setValue(this.plugin.settings.goodreadsBaseUrl)
 					.onChange(async (value) => {
 						const validPattern =
-							/^https?:\/\/.*?\/review\/list_rss\/\d+\?key=[a-zA-Z0-9-_]+/;
+							/^https?:\/\/.*?\/review\/list_rss\/\d+\?key=[a-zA-Z0-9-_]+&shelf=/;
 
 						const result = value.match(validPattern);
 
