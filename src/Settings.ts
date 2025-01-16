@@ -74,8 +74,16 @@ export class Settings extends PluginSettingTab {
 				text
 					.setValue(this.plugin.settings.goodreadsBaseUrl)
 					.onChange(async (value) => {
-						this.plugin.settings.goodreadsBaseUrl = value;
-						await this.plugin.saveSettings();
+						const validPattern =
+							/^https?:\/\/.*?\/review\/list_rss\/\d+\?key=[a-zA-Z0-9-_]+/;
+
+						const result = value.match(validPattern);
+
+						if (result) {
+							// Save only the url up to and including the key
+							this.plugin.settings.goodreadsBaseUrl = result[0];
+							await this.plugin.saveSettings();
+						}
 					}),
 			);
 
