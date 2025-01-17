@@ -79,11 +79,14 @@ export class Settings extends PluginSettingTab {
 
 						const result = value.match(validPattern);
 
+						// Save the url only when it matches the pattern
 						if (result) {
-							// Save only the url up to and including the key
 							this.plugin.settings.goodreadsBaseUrl = result[0];
-							await this.plugin.saveSettings();
+						} else {
+							this.plugin.settings.goodreadsBaseUrl = "";
 						}
+
+						await this.plugin.saveSettings();
 					}),
 			);
 
