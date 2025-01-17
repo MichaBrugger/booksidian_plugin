@@ -70,9 +70,8 @@ export class Settings extends PluginSettingTab {
 				"Please add your RSS Base URL here (everything before the shelf name).",
 			)
 			.setTooltip("https://www.goodreads.com/ ... &shelf=")
-			.addText((text) =>
-				text
-					.setValue(this.plugin.settings.goodreadsBaseUrl)
+			.addText((text) => {
+				text.setValue(this.plugin.settings.goodreadsBaseUrl)
 					.setPlaceholder("https://www.goodreads.com/ ... &shelf=")
 					.onChange(async (value) => {
 						const validPattern =
@@ -88,8 +87,10 @@ export class Settings extends PluginSettingTab {
 						}
 
 						await this.plugin.saveSettings();
-					}),
-			);
+					});
+				text.inputEl.style.minWidth = "18rem";
+				text.inputEl.style.maxWidth = "18rem";
+			});
 
 		// set the goodreads shelves that should be exported
 		new Setting(containerEl)
