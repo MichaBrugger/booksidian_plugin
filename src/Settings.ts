@@ -1,5 +1,11 @@
-import { App, Notice, PluginSettingTab, Setting } from "obsidian";
+import { App, debounce, Notice, PluginSettingTab, Setting } from "obsidian";
 import Booksidian from "../main";
+
+const debouncedSaveSettings = debounce(
+	(callback: () => void) => callback(),
+	500,
+	true,
+);
 
 export class Settings extends PluginSettingTab {
 	plugin: Booksidian;
@@ -74,24 +80,27 @@ export class Settings extends PluginSettingTab {
 				text.setValue(this.plugin.settings.goodreadsBaseUrl)
 					.setPlaceholder("https://www.goodreads.com/ ... &shelf=")
 					.onChange(async (value) => {
-						const validPattern =
-							/^https?:\/\/.*?\/review\/list_rss\/\d+\?key=[a-zA-Z0-9-_]+&shelf=/;
+						debouncedSaveSettings(async () => {
+							const validPattern =
+								/^https?:\/\/.*?\/review\/list_rss\/\d+\?key=[a-zA-Z0-9-_]+&shelf=/;
 
-						const result = value.trim().match(validPattern);
+							const result = value.trim().match(validPattern);
 
-						// Save the url only when it matches the pattern
-						if (result) {
-							this.plugin.settings.goodreadsBaseUrl = result[0];
-						} else if (value.trim().length === 0) {
-							this.plugin.settings.goodreadsBaseUrl = "";
-						} else {
-							new Notice(
-								"Booksidian: Could not parse RSS Base URL",
-							);
-							return;
-						}
+							// Save the url only when it matches the pattern
+							if (result) {
+								this.plugin.settings.goodreadsBaseUrl =
+									result[0];
+							} else if (value.trim().length === 0) {
+								this.plugin.settings.goodreadsBaseUrl = "";
+							} else {
+								new Notice(
+									"Booksidian: Could not parse RSS Base URL",
+								);
+								return;
+							}
 
-						await this.plugin.saveSettings();
+							await this.plugin.saveSettings();
+						});
 					});
 				text.inputEl.style.minWidth = "18rem";
 				text.inputEl.style.maxWidth = "18rem";
