@@ -90,6 +90,7 @@ export class Settings extends PluginSettingTab {
 							if (result) {
 								this.plugin.settings.goodreadsBaseUrl =
 									result[0];
+								text.inputEl.value = result[0];
 							} else if (value.trim().length === 0) {
 								this.plugin.settings.goodreadsBaseUrl = "";
 							} else {
