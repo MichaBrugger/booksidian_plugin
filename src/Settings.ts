@@ -1,5 +1,11 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
+import { App, debounce, Notice, PluginSettingTab, Setting } from "obsidian";
 import Booksidian from "../main";
+
+const debouncedSaveSettings = debounce(
+	(callback: () => void) => callback(),
+	500,
+	true,
+);
 
 export class Settings extends PluginSettingTab {
 	plugin: Booksidian;
@@ -70,14 +76,36 @@ export class Settings extends PluginSettingTab {
 				"Please add your RSS Base URL here (everything before the shelf name).",
 			)
 			.setTooltip("https://www.goodreads.com/ ... &shelf=")
-			.addText((text) =>
-				text
-					.setValue(this.plugin.settings.goodreadsBaseUrl)
+			.addText((text) => {
+				text.setValue(this.plugin.settings.goodreadsBaseUrl)
+					.setPlaceholder("https://www.goodreads.com/ ... &shelf=")
 					.onChange(async (value) => {
-						this.plugin.settings.goodreadsBaseUrl = value;
-						await this.plugin.saveSettings();
-					}),
-			);
+						debouncedSaveSettings(async () => {
+							const validPattern =
+								/^https?:\/\/.*?\/review\/list_rss\/\d+\?key=[a-zA-Z0-9-_]+&shelf=/;
+
+							const result = value.trim().match(validPattern);
+
+							// Save the url only when it matches the pattern
+							if (result) {
+								this.plugin.settings.goodreadsBaseUrl =
+									result[0];
+								text.inputEl.value = result[0];
+							} else if (value.trim().length === 0) {
+								this.plugin.settings.goodreadsBaseUrl = "";
+							} else {
+								new Notice(
+									"Booksidian: Could not parse RSS Base URL",
+								);
+								return;
+							}
+
+							await this.plugin.saveSettings();
+						});
+					});
+				text.inputEl.style.minWidth = "18rem";
+				text.inputEl.style.maxWidth = "18rem";
+			});
 
 		// set the goodreads shelves that should be exported
 		new Setting(containerEl)
