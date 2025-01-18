@@ -82,7 +82,7 @@ export class Settings extends PluginSettingTab {
 						// Save the url only when it matches the pattern
 						if (result) {
 							this.plugin.settings.goodreadsBaseUrl = result[0];
-						} else {
+						} else if (value.trim().length === 0) {
 							this.plugin.settings.goodreadsBaseUrl = "";
 						}
 
