@@ -129,7 +129,7 @@ export class Book {
 			}
 
 		
-		if (this.plugin.settings.onlyFrontmatter) {
+		if (this.plugin.settings.onlyFrontmatter && file) {
 			const endPos = this.plugin.app.metadataCache.getFileCache(file)?.frontmatterPosition?.end.offset;
 
 			const oldContent = await this.plugin.app.vault.read(file)
