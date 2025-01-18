@@ -1,0 +1,3 @@
+- [x] Add option to only overwrite properties
+- [x] HTML-parse text
+- [ ] Add option for custom property names

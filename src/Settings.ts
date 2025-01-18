@@ -1,14 +1,25 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
+import { App, Notice, PluginSettingTab, Setting } from "obsidian";
 import Booksidian from "../main";
+import { DEFAULT_SETTINGS } from "../const/settings";
+import { ToggleComponent } from "obsidian";
+
+// Toggler type with a string and a ToggleComponent
+type Toggler = {
+	label: string;
+	toggle: ToggleComponent;
+};
+
 
 export class Settings extends PluginSettingTab {
 	plugin: Booksidian;
 	currentYAML: { [key: string]: string };
+	togglers: Toggler[];
 
 	constructor(app: App, plugin: Booksidian) {
 		super(app, plugin);
 		this.plugin = plugin;
 		this.currentYAML = plugin.settings.frontmatterDictionary;
+		this.togglers = [];
 	}
 
 	getSelectedCount(): string {
@@ -33,6 +44,10 @@ export class Settings extends PluginSettingTab {
 
 	optionIsSelected(option: string): boolean {
 		return this.currentYAML.hasOwnProperty(option);
+	}
+
+	message(): void {
+		new Notice("Goodreads shelves updated!\n"+this.plugin.settings.goodreadsShelves.join("\n"));
 	}
 
 	display(): void {
@@ -78,22 +93,106 @@ export class Settings extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					}),
 			);
+		new Setting(containerEl).setHeading().setName("Goodreads Shelves");
+
+		
+		for (const shelf of DEFAULT_SETTINGS.goodreadsShelves){
+
+			new Setting(containerEl).addToggle((toggle) => {
+				this.togglers.push({label: shelf, toggle: toggle});
+
+				toggle.setValue(this.plugin.settings.goodreadsShelves.includes(shelf));
+
+				toggle.onChange(async (newValue) => {
+
+					const hasValue: boolean = this.plugin.settings.goodreadsShelves.includes(shelf);
+					if (newValue) {
+						if(!hasValue) {
+						this.plugin.settings.goodreadsShelves.push(shelf);
+						}
+					} else {
+						if (hasValue){
+							this.plugin.settings.goodreadsShelves = this.plugin.settings.goodreadsShelves.filter(s => s !== shelf);
+						}		
+					}
+
+
+					await this.plugin.saveSettings();
+					this.message();
+				});
+			}).setName(shelf)//.setDesc(shelf);
+	}
+
 
 		// set the goodreads shelves that should be exported
 		new Setting(containerEl)
-			.setName("Your Goodreads Shelves")
+			.setName("Your Custom Goodreads Shelves")
 			.setDesc(
-				"Here you can specify which shelves you'd like to export. Please separate the values with a comma and make sure you got the names right. ",
+				"Here you can specify which shelves you'd like to export. Please separate the values with a NEWLINE and make sure you got the names right. ",
 			)
 			.setTooltip("You can check the proper naming in the RSS url.")
 			.addTextArea((text) => {
 				text.inputEl.rows = 6;
-				text.setPlaceholder("Your Shelves")
-					.setValue(this.plugin.settings.goodreadsShelves)
-					.onChange(async (value) => {
-						this.plugin.settings.goodreadsShelves = value;
-						await this.plugin.saveSettings();
-					});
+				text.setPlaceholder("Your Shelves");
+				text.setValue(
+					this.plugin.settings.goodreadsShelves
+						.filter((shelf) => !DEFAULT_SETTINGS.goodreadsShelves.includes(shelf))
+						.join("\n")
+				);
+
+				const textFiledHandler = async () => {
+					const value = text.getValue();
+					// Get new shelves from textarea
+					const valueArray = value.split("\n").map((shelf) => shelf.trim()).filter((shelf) => shelf.length > 0);
+					
+					const textArray = [... new Set(valueArray)]
+					
+					
+					for (const ds of DEFAULT_SETTINGS.goodreadsShelves){
+						const toggler = this.togglers.find((toggler) => toggler.label === ds);
+						if (textArray.includes(ds) ){
+							
+							if (toggler.toggle.getValue() === false){
+								toggler.toggle.setValue(true);
+							} 
+					} 
+				}
+
+				const prevDefaultShelves = this.plugin.settings.goodreadsShelves.filter((shelf) => DEFAULT_SETTINGS.goodreadsShelves.includes(shelf));
+					
+				const newArray = [...textArray, ...prevDefaultShelves]
+
+				// Remove duplicates
+				const newShelves = [...new Set(newArray)]
+
+				const customShelves = newShelves.filter((shelf) => !DEFAULT_SETTINGS.goodreadsShelves.includes(shelf));
+
+					text.setValue(customShelves.join("\n"));
+
+					this.plugin.settings.goodreadsShelves = newShelves;
+					// Add new shelves
+					// this.plugin.settings.goodreadsShelves.push(...newShelves);
+					
+					await this.plugin.saveSettings();
+
+					this.message();
+				}
+
+				
+				text.inputEl.addEventListener("blur", async () => {
+					await textFiledHandler();
+				});
+
+				text.inputEl.addEventListener("keydown", async (event) => {
+					// If the key is Enter
+					if (event.key === "Enter") {
+					await textFiledHandler();
+				}
+				});
+
+				text.onChange(async (value) => {
+					//
+				});
 			});
 
 		new Setting(containerEl)
@@ -127,6 +226,20 @@ export class Settings extends PluginSettingTab {
 
 				toggle.onChange((newValue) => {
 					this.plugin.settings.overwrite = newValue;
+					this.plugin.saveSettings();
+				});
+			});
+
+			new Setting(containerEl)
+			.setName("Only overwrite frontmatter")
+			.setDesc(
+				"If 'Overwrite' is enabled, only overwrite the frontmatter of existing notes. This will keep the body of the note intact.",
+			)
+			.addToggle((toggle) => {
+				toggle.setValue(this.plugin.settings.onlyFrontmatter);
+
+				toggle.onChange((newValue) => {
+					this.plugin.settings.onlyFrontmatter = newValue;
 					this.plugin.saveSettings();
 				});
 			});

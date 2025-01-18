@@ -10,6 +10,22 @@ export default class Booksidian extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
+
+		// LEGACY: goodreadsShelves was a string, not an array, this is to convert it to an array !!
+		if (!Array.isArray(this.settings.goodreadsShelves) || !this.settings.goodreadsShelves.every(item => typeof item === 'string')) {
+			console.error("Booksidian plugin: goodreadsShelves is not a string array");
+			if (typeof this.settings.goodreadsShelves === 'string') {
+			try {
+				// @ts-ignore
+				this.settings.goodreadsShelves = this.settings.goodreadsShelves.split(',').map(item => item.trim());
+				await this.saveSettings();
+			} catch (e){
+				console.error(e);
+				this.settings.goodreadsShelves = [];
+				await this.saveSettings();
+			}
+		}
+		}
 		// This creates an icon in the left ribbon.
 		this.addRibbonIcon(
 			"bold-glyph",
@@ -33,7 +49,7 @@ export default class Booksidian extends Plugin {
 	}
 
 	updateLibrary() {
-		this.settings.goodreadsShelves.split(",").forEach(async (_shelf) => {
+		this.settings.goodreadsShelves.forEach(async (_shelf) => {
 			const shelf = new Shelf(this, _shelf.trim());
 			await shelf.createFolder();
 			await shelf.fetchGoodreadsFeed();

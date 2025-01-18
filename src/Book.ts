@@ -1,17 +1,30 @@
 import { CurrentYAML } from "const/settings";
 import { GoodreadsBook } from "const/goodreads";
 import Booksidian from "main";
-import { Body } from "./Body";
 import { Frontmatter } from "./Frontmatter";
 import { isAbsolute } from "path";
 import * as nodeFs from "fs";
+// import * as Mustache from "mustache";
+// import * as he from "he";
+// import * as TurndownService from "turndown";
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires 
+const he = require("he");
+// eslint-disable-next-line @typescript-eslint/no-var-requires 
+const TurndownService = require("turndown");
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const TurndownService = require("turndown");
+const Mustache = require("mustache");
+
+
+// type Body = {
+// 	currentBody: string;
+// 	book: Book;
+// }
 
 export class Book {
 	id: string;
-	pages: number;
+	pages: number | undefined;
 	title: string;
 	rawTitle: string;
 	fullTitle: string;
@@ -31,7 +44,7 @@ export class Book {
 	bookPage: string;
 
 	constructor(
-		public plugin: Booksidian,
+		public plugin: Booksidian ,
 		book: GoodreadsBook,
 	) {
 		this.id = book.identifiers.$.id;
@@ -57,15 +70,16 @@ export class Book {
 		return this.title;
 	}
 
-	public getContent(): string {
+	public getContent(): {frontmatter: string, body: string} | Error {
 		const set = this.plugin.settings;
 		try {
-			return (
-				this.getFrontMatter(set.frontmatterDictionary) +
-				this.getBody(set.bodyString)
-			);
+			return {
+				frontmatter: this.getFrontMatter(set.frontmatterDictionary) ,
+				body: this.getBody(set.bodyString)
+			};
 		} catch (error) {
 			console.log(error);
+			return error;
 		}
 	}
 
@@ -73,6 +87,8 @@ export class Book {
 		const turndownService = new TurndownService();
 		return turndownService.turndown(html);
 	}
+
+
 
 	private getShelves(shelves: string, dateRead: string): string {
 		// Goodreads doesn't send a shelf value for books on the read shelf.
@@ -86,7 +102,9 @@ export class Book {
 	}
 
 	private getBody(currentBody: string): string {
-		return new Body(currentBody, this).getBody();
+		// return new Body(currentBody, this).getBody();
+		const render = Mustache.render(currentBody, this) as string;
+		return he.decode(render);
 	}
 
 	private getFrontMatter(currentYAML: CurrentYAML): string {
@@ -103,7 +121,25 @@ export class Book {
 		const file = this.plugin.app.vault.getFileByPath(fullPath);
 		if (file && !this.plugin.settings.overwrite) return;
 
-		const bookContent = book.getContent();
+		let bookContent: string;
+
+		const content = book.getContent();
+			if (content instanceof Error) {
+				throw content;
+			}
+
+		
+		if (this.plugin.settings.onlyFrontmatter && file) {
+			const endPos = this.plugin.app.metadataCache.getFileCache(file)?.frontmatterPosition?.end.offset;
+
+			const oldContent = await this.plugin.app.vault.read(file)
+			
+			
+			bookContent = content.frontmatter + oldContent.substring(endPos+1);
+
+		} else {
+			bookContent = content.frontmatter + content.body;
+		}
 
 		if (isAbsolute(fullPath)) {
 			nodeFs.writeFile(fullPath, bookContent, (error) => {
@@ -139,6 +175,7 @@ export class Book {
 		}
 
 		// replace remaining special characters with an empty character
+		// eslint-disable-next-line no-useless-escape
 		title = title.replace(/[&\/\\#,+()$~%.'":*?<>{}|]/g, "");
 
 		return title.trim();

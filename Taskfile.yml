@@ -1,0 +1,26 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  DIR_PLUGIN: C:\PROJECTS\Obsidian\dev7\.obsidian\plugins\booksidian-plugin
+
+tasks:
+  default:
+    cmds:
+      - task: build
+      - task: copy
+  copy:
+    cmds:
+      - xcopy "{{.USER_WORKING_DIR}}\main.js" "{{.DIR_PLUGIN}}\main.js" /Y
+  build:
+    cmds:
+      - npm run build
+  patch:
+    cmds:
+      - npm version patch
+  git:
+    cmds:
+      - git add .
+      - git commit -m "task"
+      - git push
