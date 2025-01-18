@@ -77,7 +77,7 @@ export class Settings extends PluginSettingTab {
 						const validPattern =
 							/^https?:\/\/.*?\/review\/list_rss\/\d+\?key=[a-zA-Z0-9-_]+&shelf=/;
 
-						const result = value.match(validPattern);
+						const result = value.trim().match(validPattern);
 
 						// Save the url only when it matches the pattern
 						if (result) {
