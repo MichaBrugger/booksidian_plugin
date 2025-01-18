@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
+import { App, Notice, PluginSettingTab, Setting } from "obsidian";
 import Booksidian from "../main";
 
 export class Settings extends PluginSettingTab {
@@ -84,6 +84,11 @@ export class Settings extends PluginSettingTab {
 							this.plugin.settings.goodreadsBaseUrl = result[0];
 						} else if (value.trim().length === 0) {
 							this.plugin.settings.goodreadsBaseUrl = "";
+						} else {
+							new Notice(
+								"Booksidian: Could not parse RSS Base URL",
+							);
+							return;
 						}
 
 						await this.plugin.saveSettings();
