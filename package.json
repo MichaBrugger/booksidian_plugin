@@ -1,7 +1,7 @@
 {
 	"name": "booksidian",
 	"author": "Micha Brugger",
-	"version": "0.5.2",
+	"version": "0.6.0",
 	"description": "Connect Obsidian to your Goodreads.",
 	"main": "main.js",
 	"scripts": {
