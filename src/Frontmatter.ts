@@ -29,12 +29,9 @@ export class Frontmatter {
 			const [prefix, postfix] = value.split(key);
 
 			if (key === "shelves") {
-				output[key] = this.book.shelves
-					.split(",")
-					.sort()
-					.map((shelf) => {
-						return `${prefix}${shelf}${postfix}`;
-					});
+				output[key] = this.book.shelves.sort().map((shelf) => {
+					return `${prefix}${shelf}${postfix}`;
+				});
 			} else {
 				output[key] =
 					`${prefix}${this.book[key as keyof Book]}${postfix}`;
