@@ -23,7 +23,7 @@ export class Book {
 	review: string;
 	rating: number;
 	avgRating: number;
-	shelves: string;
+	shelves: string[];
 	dateAdded: string;
 	dateRead: string;
 	datePublished: string;
@@ -74,15 +74,20 @@ export class Book {
 		return turndownService.turndown(html);
 	}
 
-	private getShelves(shelves: string, dateRead: string): string {
+	private getShelves(shelves: string, dateRead: string): string[] {
 		// Goodreads doesn't send a shelf value for books on the read shelf.
 		// Infer from either a missing shelf value, or a set dateRead.
 		// Check for presence of read first in case Goodreads decides to include it.
-		if (!shelves.split(",").includes("read") && (!shelves || dateRead)) {
-			return shelves ? `${shelves},read` : "read";
-		}
+		const outputShelves = shelves
+			.split(",")
+			.map((shelf) => shelf.trim()) // trim shelf names
+			.filter((shelf) => shelf); // filter out empty shelf names
 
-		return shelves;
+		// If the book has a read date and the `read` shelf is missing, we add it
+		if (dateRead && !outputShelves.contains("read"))
+			outputShelves.push("read");
+
+		return outputShelves;
 	}
 
 	private getBody(currentBody: string): string {
