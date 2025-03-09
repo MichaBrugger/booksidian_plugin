@@ -33,8 +33,17 @@ export class Frontmatter {
 					return `${prefix}${shelf}${postfix}`;
 				});
 			} else {
-				output[key] =
-					`${prefix}${this.book[key as keyof Book]}${postfix}`;
+				// If this a simple link, and the value of the string is empty, don't insert [[]]
+
+				if (
+					value == `[[${key}]]` &&
+					this.book[key as keyof Book] == ""
+				) {
+					output[key] = "";
+				} else {
+					output[key] =
+						`${prefix}${this.book[key as keyof Book]}${postfix}`;
+				}
 			}
 		});
 
