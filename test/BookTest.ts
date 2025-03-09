@@ -219,3 +219,50 @@ describe("Title with '\"' character", () => {
 		expect(unit.title).toBe("My wonderful book");
 	});
 });
+
+
+describe("Series information parser", () => {
+	test("No series", () => {
+		// Given
+		test_book.title = 'My wonderful book';
+		// When
+		const unit = new Book(null, test_book);
+		// Then
+		expect(unit.series).toBe("");
+		expect(unit.seriesName).toBe("");
+		expect(unit.seriesNumber).toBe(0);
+	});
+
+	test("Series with (, #)", () => {
+		// Given
+		test_book.title = 'My wonderful book (My series, #15)';
+		// When
+		const unit = new Book(null, test_book);
+		// Then
+		expect(unit.series).toBe("My series, #15");
+		expect(unit.seriesName).toBe("My series");
+		expect(unit.seriesNumber).toBe(15);
+	});
+
+	test("Series with ( #)", () => {
+		// Given
+		test_book.title = 'My wonderful book (My series #15)';
+		// When
+		const unit = new Book(null, test_book);
+		// Then
+		expect(unit.series).toBe("My series #15");
+		expect(unit.seriesName).toBe("My series");
+		expect(unit.seriesNumber).toBe(15);
+	});
+
+	test("Series without number", () => {
+		// Given
+		test_book.title = 'My wonderful book (My series)';
+		// When
+		const unit = new Book(null, test_book);
+		// Then
+		expect(unit.series).toBe("");
+		expect(unit.seriesName).toBe("");
+		expect(unit.seriesNumber).toBe(0);
+	});
+});

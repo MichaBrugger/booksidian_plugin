@@ -16,6 +16,8 @@ export class Book {
 	rawTitle: string;
 	fullTitle: string;
 	series: string;
+	seriesName: string;
+	seriesNumber: number;
 	subtitle: string;
 	description: string;
 	author: string;
@@ -84,7 +86,7 @@ export class Book {
 			.filter((shelf) => shelf); // filter out empty shelf names
 
 		// If the book has a read date and the `read` shelf is missing, we add it
-		if (dateRead && !outputShelves.contains("read"))
+		if (dateRead && !outputShelves.includes("read"))
 			outputShelves.push("read");
 
 		return outputShelves;
@@ -126,6 +128,8 @@ export class Book {
 
 	private cleanTitle(title: string, full: boolean) {
 		this.series = "";
+		this.seriesName = "";
+		this.seriesNumber = 0;
 		this.subtitle = "";
 		let series = "";
 
@@ -150,7 +154,25 @@ export class Book {
 	}
 
 	private getSeries(title: string): string {
-		const match = title.match(/\((.*?)\)/);
+		// only calculate once per book
+		if (this.series) {
+			return this.series;
+		}
+		let match = title.match(/.+ \(((.+?),? #(\d+))\)/);
+
+		if (match) {
+			this.series = match[1].trim();
+			this.seriesName = match[2].trim();
+			this.seriesNumber = parseInt(match[3].trim(), 10);
+			return `(${match[1]})`;
+		}
+
+		console.log(
+			`New get series parser failed for "${title}", falling back to legacy parser.`,
+		);
+
+		// fallback to old method, this is mostly for backwards compatibility in case of edge cases
+		match = title.match(/\((.*?)\)/);
 		if (match && match[1].contains("#")) {
 			this.series = match[1].trim();
 			return match[0];
