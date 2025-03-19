@@ -159,6 +159,21 @@ export class Settings extends PluginSettingTab {
 				});
 			});
 
+		containerEl.createEl("h4", { text: "Book covers" });
+
+		new Setting(containerEl)
+			.setName("Download covers")
+			.setDesc(
+				"Whether the cover image for each book should be downloaded",
+			)
+			.addToggle((toggle) => {
+				toggle.setValue(this.plugin.settings.coverDownload);
+				toggle.onChange(
+					async (value) =>
+						(this.plugin.settings.coverDownload = value),
+				);
+			});
+
 		containerEl.createEl("h3", { text: "Body" });
 		containerEl.createEl("p", {
 			text: "You can specify the content of the book-note by using {{placeholders}}. You can see the full list of placeholders in the dropdown of the frontmatter. You can choose the frontmatter placeholders you'd like and apply specific formatting to each of them.",

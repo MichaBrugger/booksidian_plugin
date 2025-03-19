@@ -7,6 +7,7 @@ export interface BooksidianSettings {
 	bodyString: string;
 	frequency: string;
 	overwrite: boolean;
+	coverDownload: boolean;
 }
 
 export interface CurrentYAML {
@@ -22,4 +23,5 @@ export const DEFAULT_SETTINGS: BooksidianSettings = {
 	bodyString: "# {{title}}\n\nauthor::[[{{author}}]]",
 	frequency: "0", // manual
 	overwrite: false,
+	coverDownload: false,
 };
