@@ -174,6 +174,21 @@ export class Settings extends PluginSettingTab {
 				);
 			});
 
+		new Setting(containerEl)
+			.setName("Cover download folder")
+			.setDesc(
+				"Path to where the cover images should be downloaded to. Like Target Folder, the path can be relative to the vault or absolute outside of the vault. If you leave this empty, the target folder for the books will be used.",
+			)
+			.addText((text) => {
+				text.setPlaceholder("Using Target Folder");
+
+				text.setValue(this.plugin.settings.coverDownloadLocation);
+				text.onChange(async (value) => {
+					this.plugin.settings.coverDownloadLocation = value.trim();
+					await this.plugin.saveSettings();
+				});
+			});
+
 		containerEl.createEl("h3", { text: "Body" });
 		containerEl.createEl("p", {
 			text: "You can specify the content of the book-note by using {{placeholders}}. You can see the full list of placeholders in the dropdown of the frontmatter. You can choose the frontmatter placeholders you'd like and apply specific formatting to each of them.",

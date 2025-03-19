@@ -8,6 +8,7 @@ export interface BooksidianSettings {
 	frequency: string;
 	overwrite: boolean;
 	coverDownload: boolean;
+	coverDownloadLocation: string;
 }
 
 export interface CurrentYAML {
@@ -24,4 +25,5 @@ export const DEFAULT_SETTINGS: BooksidianSettings = {
 	frequency: "0", // manual
 	overwrite: false,
 	coverDownload: false,
+	coverDownloadLocation: "",
 };
