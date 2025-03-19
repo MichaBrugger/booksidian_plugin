@@ -3,8 +3,7 @@ import { GoodreadsBook } from "const/goodreads";
 import Booksidian from "main";
 import { Body } from "./Body";
 import { Frontmatter } from "./Frontmatter";
-import { isAbsolute } from "path";
-import * as nodeFs from "fs";
+import { writeFile } from "./helpers";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const TurndownService = require("turndown");
@@ -112,18 +111,7 @@ export class Book {
 
 		const bookContent = book.getContent();
 
-		if (isAbsolute(fullPath)) {
-			nodeFs.writeFile(fullPath, bookContent, (error) => {
-				if (error) console.log(`Error writing ${fullPath}`, error);
-			});
-		} else {
-			try {
-				const fs = this.plugin.app.vault.adapter;
-				await fs.write(fullPath, bookContent);
-			} catch (error) {
-				console.log(`Error writing ${fullPath}`, error);
-			}
-		}
+		writeFile(fullPath, bookContent, this.plugin.app);
 	}
 
 	private cleanTitle(title: string, full: boolean) {
