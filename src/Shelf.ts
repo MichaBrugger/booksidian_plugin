@@ -5,6 +5,8 @@ import Booksidian from "main";
 import { Notice } from "obsidian";
 import * as nodeFs from "fs";
 import { isAbsolute } from "path";
+import { writeBinaryFile } from "./helpers";
+import { get } from "https";
 
 export class Shelf {
 	path: string;
@@ -48,11 +50,33 @@ export class Shelf {
 			const feed = await rssParser.parseURL(this.url);
 			feed.items.forEach(async (_book: GoodreadsBook) => {
 				const book = new Book(this.plugin, _book);
+
+				await this.fetchCoverImage(book.cover, book.title);
+
 				this.setBook(book);
 			});
 		} catch (e) {
 			console.warn(e);
 		}
+	}
+
+	private async fetchCoverImage(url: string, title: string) {
+		if (!this.plugin.settings.coverDownload) return;
+
+		let coverDownloadLocation = this.plugin.settings.coverDownloadLocation;
+
+		if (coverDownloadLocation === "")
+			coverDownloadLocation = this.plugin.settings.targetFolderPath;
+
+		const fullPath = `${coverDownloadLocation}/${title}.jpg`;
+
+		get(url, (response) => {
+			response.setEncoding("binary");
+
+			let rawData = new Uint16Array();
+			response.on("data", (chunk) => (rawData += chunk));
+			response.on("end", () => writeBinaryFile(fullPath, rawData));
+		});
 	}
 
 	public async createBookFiles(): Promise<void> {
