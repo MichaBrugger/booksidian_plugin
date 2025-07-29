@@ -70,7 +70,7 @@ export class Shelf {
 
 		const fullPath = `${coverDownloadLocation}/${title}.jpg`;
 
-		if (pathExist(fullPath)) return;
+		if (pathExist(fullPath)) return fullPath;
 
 		get(url, (response) => {
 			response.setEncoding("binary");
@@ -79,6 +79,8 @@ export class Shelf {
 			response.on("data", (chunk) => (rawData += chunk));
 			response.on("end", () => writeBinaryFile(fullPath, rawData));
 		});
+
+		return fullPath;
 	}
 
 	public async createBookFiles(): Promise<void> {
