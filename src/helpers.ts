@@ -26,7 +26,7 @@ export async function writeBinaryFile(
 		? path
 		: `${this.app.vault.adapter.basePath}/${path}`;
 
-	if (nodeFs.existsSync(filePath) && !overwrite) return;
+	if (pathExist(filePath) && !overwrite) return;
 
 	const directory = dirname(filePath);
 	if (!nodeFs.existsSync(directory)) nodeFs.mkdirSync(directory);
@@ -36,4 +36,12 @@ export async function writeBinaryFile(
 	} catch (error) {
 		console.log(`Error writing ${filePath}`, error);
 	}
+}
+
+export function pathExist(path: string) {
+	const filePath = isAbsolute(path)
+		? path
+		: `${this.app.vault.adapter.basePath}/${path}`;
+
+	return nodeFs.existsSync(filePath);
 }
