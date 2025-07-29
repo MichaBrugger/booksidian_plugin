@@ -51,7 +51,10 @@ export class Shelf {
 			feed.items.forEach(async (_book: GoodreadsBook) => {
 				const book = new Book(this.plugin, _book);
 
-				await this.fetchCoverImage(book.cover, book.title);
+				book.coverImage = await this.fetchCoverImage(
+					book.cover,
+					book.title,
+				);
 
 				this.setBook(book);
 			});
