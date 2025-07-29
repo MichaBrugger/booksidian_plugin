@@ -262,6 +262,7 @@ export class Settings extends PluginSettingTab {
 						`${this.getDisplay("description")}`,
 					)
 					.addOption("cover", `${this.getDisplay("cover")}`)
+					.addOption("coverImage", `${this.getDisplay("coverImage")}`)
 					.addOption("isbn", `${this.getDisplay("isbn")}`)
 					.addOption("review", `${this.getDisplay("review")}`)
 					.addOption("rating", `${this.getDisplay("rating")}`)
