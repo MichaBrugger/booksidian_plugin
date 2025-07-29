@@ -17,16 +17,10 @@ export async function writeFile(path: string, content: string, app: App) {
 	}
 }
 
-export async function writeBinaryFile(
-	path: string,
-	content: Uint16Array,
-	overwrite = false,
-) {
+export async function writeBinaryFile(path: string, content: Uint16Array) {
 	const filePath = isAbsolute(path)
 		? path
 		: `${this.app.vault.adapter.basePath}/${path}`;
-
-	if (pathExist(filePath) && !overwrite) return;
 
 	const directory = dirname(filePath);
 	if (!nodeFs.existsSync(directory)) nodeFs.mkdirSync(directory);
