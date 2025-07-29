@@ -5,7 +5,7 @@ import Booksidian from "main";
 import { Notice } from "obsidian";
 import * as nodeFs from "fs";
 import { isAbsolute } from "path";
-import { writeBinaryFile } from "./helpers";
+import { pathExist, writeBinaryFile } from "./helpers";
 import { get } from "https";
 
 export class Shelf {
@@ -69,6 +69,8 @@ export class Shelf {
 			coverDownloadLocation = `${this.plugin.settings.targetFolderPath}/cover`;
 
 		const fullPath = `${coverDownloadLocation}/${title}.jpg`;
+
+		if (pathExist(fullPath)) return;
 
 		get(url, (response) => {
 			response.setEncoding("binary");
