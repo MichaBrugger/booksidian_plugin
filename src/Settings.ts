@@ -177,7 +177,7 @@ export class Settings extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Cover download folder")
 			.setDesc(
-				'Path to where the cover images should be downloaded to. Like Target Folder, the path can be relative to the vault or absolute outside of the vault. If you leave this empty, a folder named "cover" will created under in Target Folder.',
+				'Path to where the cover images should be downloaded to. Like Target Folder, the path can be relative to the vault or absolute outside of the vault. If left empty, a folder named "cover" will be created under Target Folder.',
 			)
 			.addText((text) => {
 				text.setPlaceholder("Target Folder/cover");
