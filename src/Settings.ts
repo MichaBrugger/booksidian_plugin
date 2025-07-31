@@ -276,9 +276,14 @@ export class Settings extends PluginSettingTab {
 					.addOption("shelves", `${this.getDisplay("shelves")}`)
 					.addOption("bookPage", `${this.getDisplay("bookPage")}`)
 					.onChange(async (value: string) => {
-						this.optionIsSelected(value)
-							? delete this.currentYAML[value]
-							: (this.currentYAML[value] = value);
+						if (this.optionIsSelected(value)) {
+							delete this.currentYAML[value];
+						} else {
+							if (value === "coverImage")
+								// we want coverImage to default to a link
+								this.currentYAML[value] = `[[${value}]]`;
+							else this.currentYAML[value] = value;
+						}
 						await this.plugin.saveSettings();
 						this.display();
 					}),
