@@ -17,6 +17,7 @@ export interface GoodreadsBook {
 	guid: string;
 	user_shelves: string;
 	image_url: string;
+	image_path: string;
 }
 
 export interface Identifiers {

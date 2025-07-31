@@ -159,6 +159,36 @@ export class Settings extends PluginSettingTab {
 				});
 			});
 
+		containerEl.createEl("h4", { text: "Book covers" });
+
+		new Setting(containerEl)
+			.setName("Download covers")
+			.setDesc(
+				"Whether the cover image for each book should be downloaded",
+			)
+			.addToggle((toggle) => {
+				toggle.setValue(this.plugin.settings.coverDownload);
+				toggle.onChange(
+					async (value) =>
+						(this.plugin.settings.coverDownload = value),
+				);
+			});
+
+		new Setting(containerEl)
+			.setName("Cover download folder")
+			.setDesc(
+				'Path to where the cover images should be downloaded to. Like Target Folder, the path can be relative to the vault or absolute outside of the vault. If left empty, a folder named "cover" will be created under Target Folder.',
+			)
+			.addText((text) => {
+				text.setPlaceholder("Target Folder/cover");
+
+				text.setValue(this.plugin.settings.coverDownloadLocation);
+				text.onChange(async (value) => {
+					this.plugin.settings.coverDownloadLocation = value.trim();
+					await this.plugin.saveSettings();
+				});
+			});
+
 		containerEl.createEl("h3", { text: "Body" });
 		containerEl.createEl("p", {
 			text: "You can specify the content of the book-note by using {{placeholders}}. You can see the full list of placeholders in the dropdown of the frontmatter. You can choose the frontmatter placeholders you'd like and apply specific formatting to each of them.",
@@ -232,6 +262,7 @@ export class Settings extends PluginSettingTab {
 						`${this.getDisplay("description")}`,
 					)
 					.addOption("cover", `${this.getDisplay("cover")}`)
+					.addOption("coverImage", `${this.getDisplay("coverImage")}`)
 					.addOption("isbn", `${this.getDisplay("isbn")}`)
 					.addOption("review", `${this.getDisplay("review")}`)
 					.addOption("rating", `${this.getDisplay("rating")}`)
@@ -245,9 +276,14 @@ export class Settings extends PluginSettingTab {
 					.addOption("shelves", `${this.getDisplay("shelves")}`)
 					.addOption("bookPage", `${this.getDisplay("bookPage")}`)
 					.onChange(async (value: string) => {
-						this.optionIsSelected(value)
-							? delete this.currentYAML[value]
-							: (this.currentYAML[value] = value);
+						if (this.optionIsSelected(value)) {
+							delete this.currentYAML[value];
+						} else {
+							if (value === "coverImage")
+								// we want coverImage to default to a link
+								this.currentYAML[value] = `[[${value}]]`;
+							else this.currentYAML[value] = value;
+						}
 						await this.plugin.saveSettings();
 						this.display();
 					}),
