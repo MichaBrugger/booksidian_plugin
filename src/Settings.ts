@@ -268,6 +268,7 @@ export class Settings extends PluginSettingTab {
 				.addExtraButton(
 					(button) =>
 						button
+							.setTooltip("Convert to link")
 							.onClick(async () => {
 								if (value.startsWith("[[")) {
 									this.currentYAML[key] = value.replace(
