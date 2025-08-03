@@ -3,8 +3,7 @@ import { GoodreadsBook } from "const/goodreads";
 import Booksidian from "main";
 import { Body } from "./Body";
 import { Frontmatter } from "./Frontmatter";
-import { isAbsolute } from "path";
-import * as nodeFs from "fs";
+import { writeFile } from "./helpers";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const TurndownService = require("turndown");
@@ -30,6 +29,7 @@ export class Book {
 	dateRead: string;
 	datePublished: string;
 	cover: string;
+	coverImage: string;
 	bookPage: string;
 
 	constructor(
@@ -51,6 +51,7 @@ export class Book {
 		this.dateRead = this.parseDate(book.user_read_at);
 		this.datePublished = this.parseDate(book.book_published);
 		this.cover = book.image_url;
+		this.coverImage = book.image_path;
 		this.shelves = this.getShelves(book.user_shelves, this.dateRead);
 		this.bookPage = `https://www.goodreads.com/book/show/${this.id}`;
 	}
@@ -112,18 +113,7 @@ export class Book {
 
 		const bookContent = book.getContent();
 
-		if (isAbsolute(fullPath)) {
-			nodeFs.writeFile(fullPath, bookContent, (error) => {
-				if (error) console.log(`Error writing ${fullPath}`, error);
-			});
-		} else {
-			try {
-				const fs = this.plugin.app.vault.adapter;
-				await fs.write(fullPath, bookContent);
-			} catch (error) {
-				console.log(`Error writing ${fullPath}`, error);
-			}
-		}
+		writeFile(fullPath, bookContent, this.plugin.app);
 	}
 
 	private cleanTitle(title: string, full: boolean) {
