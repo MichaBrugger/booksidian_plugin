@@ -31,6 +31,7 @@ const test_book: GoodreadsBook = {
 	guid: "test_guid",
 	user_shelves: "test_shelf",
 	image_url: "test_image_url",
+	image_path: "test_image_url",
 };
 
 describe("Empty title", () => {
