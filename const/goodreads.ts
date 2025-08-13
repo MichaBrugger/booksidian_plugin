@@ -10,6 +10,7 @@ export interface GoodreadsBook {
 	average_rating: string;
 	user_read_at: string;
 	user_date_added: string;
+	user_date_created: string;
 	book_published: string;
 	identifiers: Identifiers;
 	content: string;

@@ -268,6 +268,10 @@ export class Settings extends PluginSettingTab {
 					.addOption("rating", `${this.getDisplay("rating")}`)
 					.addOption("avgRating", `${this.getDisplay("avgRating")}`)
 					.addOption("dateAdded", `${this.getDisplay("dateAdded")}`)
+					.addOption(
+						"dateCreated",
+						`${this.getDisplay("dateCreated")}`,
+					)
 					.addOption("dateRead", `${this.getDisplay("dateRead")}`)
 					.addOption(
 						"datePublished",

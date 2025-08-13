@@ -26,6 +26,7 @@ export class Book {
 	avgRating: number;
 	shelves: string[];
 	dateAdded: string;
+	dateCreated: string;
 	dateRead: string;
 	datePublished: string;
 	cover: string;
@@ -48,6 +49,7 @@ export class Book {
 		this.rating = parseInt(book.user_rating) || 0;
 		this.avgRating = parseFloat(book.average_rating) || 0;
 		this.dateAdded = this.parseDate(book.user_date_added);
+		this.dateCreated = this.parseDate(book.user_date_created);
 		this.dateRead = this.parseDate(book.user_read_at);
 		this.datePublished = this.parseDate(book.book_published);
 		this.cover = book.image_url;
