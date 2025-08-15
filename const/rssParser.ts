@@ -16,6 +16,7 @@ export const rssParser = new Parser({
 			"average_rating",
 			"user_read_at",
 			"user_date_added",
+			"user_date_created",
 			"book_published",
 			["book", "identifiers"],
 			"user_shelves",
