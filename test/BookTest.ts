@@ -24,6 +24,7 @@ const test_book: GoodreadsBook = {
 	average_rating: "3",
 	user_read_at: "01/01/1970",
 	user_date_added: "01/01/1970",
+	user_date_created: "01/01/1970",
 	book_published: "01/01/1970",
 	identifiers: test_identifier,
 	content: "test_content",
