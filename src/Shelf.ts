@@ -47,17 +47,26 @@ export class Shelf {
 
 	public async fetchGoodreadsFeed(): Promise<void> {
 		try {
-			const feed = await rssParser.parseURL(this.url);
-			feed.items.forEach(async (_book: GoodreadsBook) => {
-				const book = new Book(this.plugin, _book);
+			let page = 1;
+			//let hasMore = true;
+			while (true) {
+				const pagedUrl = `${this.url}&page=${page}`;
+				const feed = await rssParser.parseURL(pagedUrl);
 
-				book.coverImage = await this.fetchCoverImage(
-					book.cover,
-					book.title,
-				);
+				if (!feed.items) break;
 
-				this.setBook(book);
-			});
+				//feed.items.forEach(async (_book: GoodreadsBook) => {
+				for (const _book of feed.items as GoodreadsBook[]) {
+					const book = new Book(this.plugin, _book);
+					book.coverImage = await this.fetchCoverImage(
+						book.cover,
+						book.title,
+					);
+					this.setBook(book);
+				};
+				page++;
+				if (feed.items.length < 100) break;
+			}
 		} catch (e) {
 			console.warn(e);
 		}
