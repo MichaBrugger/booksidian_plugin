@@ -18,6 +18,7 @@ export class Shelf {
 		public shelfName: string,
 	) {
 		this.path = `${plugin.settings.targetFolderPath}`;
+		shelfName = shelfName.replace(/\p{C}/gu, "");
 		this.url = `${plugin.settings.goodreadsBaseUrl}${shelfName.toLocaleLowerCase()}`;
 	}
 
@@ -48,9 +49,10 @@ export class Shelf {
 	public async fetchGoodreadsFeed(): Promise<void> {
 		try {
 			let page = 1;
-			//let hasMore = true;
 			while (true) {
 				const pagedUrl = `${this.url}&page=${page}`;
+				//console.log({ pagedUrl });
+				//debugger;
 				const feed = await rssParser.parseURL(pagedUrl);
 
 				if (!feed.items) break;
@@ -67,6 +69,7 @@ export class Shelf {
 				page++;
 				if (feed.items.length < 100) break;
 			}
+			console.log(`Fetched ${this.getBooks().length} books from shelf ${this.shelfName}`);
 		} catch (e) {
 			console.warn(e);
 		}
@@ -115,7 +118,8 @@ export class Shelf {
 		if (syncCount === 1) {
 			noticeMsg = `${firstTitle} synced from Goodreads!`;
 		} else {
-			noticeMsg = `${this.getBooks().length} books, including ${firstTitle}, synced from Goodreads!`;
+			//noticeMsg = `${this.getBooks().length} books, including ${firstTitle}, synced from Goodreads!`;
+			noticeMsg = `${this.getBooks().length} Goodreads books from shelf "${this.shelfName}" synced`;
 		}
 
 		new Notice(noticeMsg, 5000);
