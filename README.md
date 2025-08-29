@@ -10,6 +10,8 @@ You can set both the body and the frontmatter for your book-note by choosing fro
 
 This plugin assumes Goodreads RSS feed returns 100 book per page.  Continues getting pages of 100 books until final page with less than 100 books.  This plugin will need to be modified if Goodreads changes this.
 
+> Previous version of this plugin required separate shelves of 100 books. This plugin now works with any bookshelf with any number of books including shelves `to-read` and `read`.
+
 #### Creating Shelves
 You can create those in Goodreads und `My Books` and then `Add shelf` in the left-side menu:
 ![image](https://user-images.githubusercontent.com/46029522/152001408-87c88a68-b161-4dfd-9845-d6036a05992b.png)
