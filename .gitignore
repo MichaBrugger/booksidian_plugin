@@ -1,6 +1,7 @@
 # vscode
 .vscode
 .devcontainer
+*.code-workspace
 
 # Intellij
 *.iml
@@ -21,3 +22,6 @@ data.json
 
 # Exclude macOS Finder (System Explorer) View States
 .DS_Store
+
+# Exclude Windows
+Thumbs.db

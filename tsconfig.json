@@ -1,5 +1,6 @@
 {
 	"compilerOptions": {
+		"types": ["node", "jest"],
 		"baseUrl": ".",
 		"inlineSourceMap": true,
 		"inlineSources": true,

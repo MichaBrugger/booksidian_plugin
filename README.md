@@ -8,7 +8,9 @@ You can set both the body and the frontmatter for your book-note by choosing fro
 
 ## Setup Instructions
 
-Please note that the way Goodreads handles their RSS feed, only the first 100 items of a shelf are added to the respective RSS feed. So if you have more than 100 books you'd like to export from one shelf, you have to split them into multiple shelves.
+This plugin assumes Goodreads RSS feed returns 100 book per page.  Continues getting pages of 100 books until final page with less than 100 books.  This plugin will need to be modified if Goodreads changes this.
+
+> Previous version of this plugin required separate shelves of 100 books. This plugin now works with any bookshelf with any number of books including shelves `to-read` and `read`.
 
 #### Creating Shelves
 You can create those in Goodreads und `My Books` and then `Add shelf` in the left-side menu:
