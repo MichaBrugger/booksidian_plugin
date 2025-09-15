@@ -53,7 +53,7 @@ export class Shelf {
 
 				book.coverImage = await this.fetchCoverImage(
 					book.cover,
-					book.title,
+					book.id,
 				);
 
 				this.setBook(book);
