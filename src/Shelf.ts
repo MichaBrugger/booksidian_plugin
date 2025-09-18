@@ -57,7 +57,6 @@ export class Shelf {
 
 				if (!feed.items) break;
 
-				//feed.items.forEach(async (_book: GoodreadsBook) => {
 				for (const _book of feed.items as GoodreadsBook[]) {
 					const book = new Book(this.plugin, _book);
 					book.coverImage = await this.fetchCoverImage(
