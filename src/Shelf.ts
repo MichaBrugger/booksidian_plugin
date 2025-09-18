@@ -118,7 +118,6 @@ export class Shelf {
 		if (syncCount === 1) {
 			noticeMsg = `${firstTitle} synced from Goodreads!`;
 		} else {
-			//noticeMsg = `${this.getBooks().length} books, including ${firstTitle}, synced from Goodreads!`;
 			noticeMsg = `${this.getBooks().length} Goodreads books from shelf "${this.shelfName}" synced`;
 		}
 
