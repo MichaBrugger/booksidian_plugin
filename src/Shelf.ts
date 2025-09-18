@@ -51,8 +51,6 @@ export class Shelf {
 			let page = 1;
 			while (true) {
 				const pagedUrl = `${this.url}&page=${page}`;
-				//console.log({ pagedUrl });
-				//debugger;
 				const feed = await rssParser.parseURL(pagedUrl);
 
 				if (!feed.items) break;
