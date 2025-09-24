@@ -61,10 +61,12 @@ export class Settings extends PluginSettingTab {
 					.setPlaceholder("Vault root")
 					.setValue(this.plugin.settings.targetFolderPath)
 					.onChange(async (value) => {
-						this.plugin.settings.targetFolderPath = value.replace(
-							/[\\/]+$/g, // matches any trailing slashes
-							"",
-						);
+						this.plugin.settings.targetFolderPath = value
+							.replace(
+								/[\\/]+$/g, // matches any trailing slashes
+								"",
+							)
+							.trim();
 						await this.plugin.saveSettings();
 					}),
 			);
