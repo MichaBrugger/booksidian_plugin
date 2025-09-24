@@ -17,7 +17,9 @@ export class Shelf {
 		public plugin: Booksidian,
 		public shelfName: string,
 	) {
-		this.path = `${plugin.settings.targetFolderPath}`;
+		const targetFolder = plugin.settings.targetFolderPath;
+		this.path = targetFolder === "" ? "./" : targetFolder;
+
 		this.url = `${plugin.settings.goodreadsBaseUrl}${shelfName.toLocaleLowerCase()}`;
 	}
 
