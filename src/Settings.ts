@@ -58,7 +58,7 @@ export class Settings extends PluginSettingTab {
 			)
 			.addText((text) =>
 				text
-					.setPlaceholder("")
+					.setPlaceholder("Vault root")
 					.setValue(this.plugin.settings.targetFolderPath)
 					.onChange(async (value) => {
 						this.plugin.settings.targetFolderPath = value.replace(
