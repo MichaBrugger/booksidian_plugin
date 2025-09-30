@@ -71,7 +71,7 @@ export class Shelf {
 		let coverDownloadLocation = this.plugin.settings.coverDownloadLocation;
 
 		if (coverDownloadLocation === "")
-			coverDownloadLocation = `${this.plugin.settings.targetFolderPath}/cover`;
+			coverDownloadLocation = `${this.plugin.settings.targetFolderPath || "."}/cover`;
 
 		const fullPath = `${coverDownloadLocation}/${title}.jpg`;
 
