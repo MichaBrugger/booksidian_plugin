@@ -46,9 +46,6 @@ export class Settings extends PluginSettingTab {
 
 		containerEl.empty();
 		containerEl.createEl("h3", { text: "Goodreads RSS Feed" });
-		containerEl.createEl("p", {
-			text: "Only the first 100 items of a shelf are added to the RSS feed. So if you have more than 100 books, you have to split them into multiple shelves.",
-		});
 
 		// set the target folder for the exports
 		new Setting(containerEl)
