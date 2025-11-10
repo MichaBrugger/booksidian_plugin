@@ -1,6 +1,6 @@
 import { Plugin } from "obsidian";
 import { Shelf } from "src/Shelf";
-import { Settings } from "src/Settings";
+import { Settings } from "src/settings/Settings";
 import { BooksidianSettings, DEFAULT_SETTINGS } from "const/settings";
 
 export default class Booksidian extends Plugin {

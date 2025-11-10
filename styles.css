@@ -1,0 +1,7 @@
+.booksidian-plugin__settings .search-input-container {
+	width: 100%;
+}
+
+.booksidian-plugin__settings input, textarea, select {
+	min-width: 200px;
+}
