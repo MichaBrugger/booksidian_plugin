@@ -50,14 +50,12 @@ export class Shelf {
 	public async fetchGoodreadsFeed(): Promise<void> {
 		try {
 			let page = 1;
-			//let hasMore = true;
 			while (true) {
-				const pagedUrl = `${this.url}&page=${page}`;
+				const pagedUrl = `${this.url}&page=${page}&per_page=100`;
 				const feed = await rssParser.parseURL(pagedUrl);
 
 				if (!feed.items) break;
 
-				//feed.items.forEach(async (_book: GoodreadsBook) => {
 				for (const _book of feed.items as GoodreadsBook[]) {
 					const book = new Book(this.plugin, _book);
 					book.coverImage = await this.fetchCoverImage(
@@ -67,7 +65,7 @@ export class Shelf {
 					this.setBook(book);
 				}
 				page++;
-				if (feed.items.length < 100) break;
+				if (!feed.items.length) break;
 			}
 		} catch (e) {
 			console.warn(e);
