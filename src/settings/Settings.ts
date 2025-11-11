@@ -1,5 +1,5 @@
 import { App, debounce, Notice, PluginSettingTab, Setting } from "obsidian";
-import { FolderSuggest } from './suggesters/FolderSuggester';
+import { FolderSuggest } from "./suggesters/FolderSuggester";
 import Booksidian from "../../main";
 
 const debouncedSaveSettings = debounce(
@@ -53,23 +53,24 @@ export class Settings extends PluginSettingTab {
 			.setName("Target Folder")
 			.setDesc(
 				"Path to where to store the book notes. Can be either a relative path within the vault, or absolute outside of the vault. If you leave this empty, the books will be created in the root of the vault.",
-            ).addSearch(cb=> {
-                try {
-                  new FolderSuggest(this.app, cb.inputEl);
-                } catch (e) {
-                  console.error(e); // Improved error handling
-                }
-                cb.setPlaceholder("Vault root")
-                  .setValue(this.plugin.settings.targetFolderPath)
-                  .onChange(async value => {
-                    this.plugin.settings.targetFolderPath = value
+			)
+			.addSearch((cb) => {
+				try {
+					new FolderSuggest(this.app, cb.inputEl);
+				} catch (e) {
+					console.error(e); // Improved error handling
+				}
+				cb.setPlaceholder("Vault root")
+					.setValue(this.plugin.settings.targetFolderPath)
+					.onChange(async (value) => {
+						this.plugin.settings.targetFolderPath = value
 							.replace(
 								/[\\/]+$/g, // matches any trailing slashes
 								"",
 							)
 							.trim();
 						await this.plugin.saveSettings();
-                  });
+					});
 			});
 
 		// set the base url for all goodreads rss feeds
@@ -181,18 +182,20 @@ export class Settings extends PluginSettingTab {
 			.setName("Cover download folder")
 			.setDesc(
 				'Path to where the cover images should be downloaded to. Like Target Folder, the path can be relative to the vault or absolute outside of the vault. If left empty, a folder named "cover" will be created under Target Folder.',
-            ).addSearch(cb=> {
-                try {
-                  new FolderSuggest(this.app, cb.inputEl);
-                } catch (e) {
-                  console.error(e); // Improved error handling
-                }
-                cb.setPlaceholder("Target Folder/cover")
-                  .setValue(this.plugin.settings.coverDownloadLocation)
-                  .onChange(async value => {
-                    this.plugin.settings.coverDownloadLocation = value.trim();
-					await this.plugin.saveSettings();
-                  });
+			)
+			.addSearch((cb) => {
+				try {
+					new FolderSuggest(this.app, cb.inputEl);
+				} catch (e) {
+					console.error(e); // Improved error handling
+				}
+				cb.setPlaceholder("Target Folder/cover")
+					.setValue(this.plugin.settings.coverDownloadLocation)
+					.onChange(async (value) => {
+						this.plugin.settings.coverDownloadLocation =
+							value.trim();
+						await this.plugin.saveSettings();
+					});
 			});
 
 		containerEl.createEl("h3", { text: "Body" });
@@ -349,6 +352,6 @@ export class Settings extends PluginSettingTab {
 						.setTooltip("Remove"),
 				);
 		});
-		containerEl.classList.add('booksidian-plugin__settings');
+		containerEl.classList.add("booksidian-plugin__settings");
 	}
 }
