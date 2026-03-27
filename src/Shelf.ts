@@ -62,6 +62,14 @@ export class Shelf {
 						book.cover,
 						book.id,
 					);
+
+					// If we're currently explicitly checking the `read` shelf, we add it
+					if (
+						this.shelfName === "read" &&
+						!book.shelves.contains("read")
+					)
+						book.shelves.push("read");
+
 					this.setBook(book);
 				}
 				page++;
