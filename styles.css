@@ -5,3 +5,12 @@
 .booksidian-plugin__settings input, textarea, select {
 	min-width: 200px;
 }
+
+.booksidian-plugin__sub-setting {
+	padding-left: 2.5em;
+	border-top: none;
+}
+
+.booksidian-plugin__sub-setting.is-hidden {
+	display: none;
+}

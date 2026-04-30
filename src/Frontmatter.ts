@@ -50,3 +50,22 @@ export class Frontmatter {
 		return yaml.dump(output);
 	}
 }
+
+/**
+ * Return `content` with its leading frontmatter block removed. If there is
+ * no leading `---` fence, or the opening fence has no matching closing
+ * fence (malformed), `content` is returned unchanged so body data is never
+ * destroyed.
+ */
+export function stripFrontmatter(content: string): string {
+	const opening = FRONTMATTER_LINES + "\n";
+	if (!content.startsWith(opening)) return content;
+
+	const lines = content.split("\n");
+	for (let i = 1; i < lines.length; i++) {
+		if (lines[i] === FRONTMATTER_LINES) {
+			return lines.slice(i + 1).join("\n");
+		}
+	}
+	return content;
+}

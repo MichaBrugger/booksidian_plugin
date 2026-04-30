@@ -2,7 +2,7 @@ import { CurrentYAML } from "const/settings";
 import { GoodreadsBook } from "const/goodreads";
 import Booksidian from "main";
 import { Body } from "./Body";
-import { Frontmatter } from "./Frontmatter";
+import { Frontmatter, stripFrontmatter } from "./Frontmatter";
 import { writeFile } from "./helpers";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -112,6 +112,19 @@ export class Book {
 
 		const file = this.plugin.app.vault.getFileByPath(fullPath);
 		if (file && !this.plugin.settings.overwrite) return;
+
+		if (file && this.plugin.settings.overwritePreserveBody) {
+			const existing = await this.plugin.app.vault.read(file);
+			const newFrontmatter = this.getFrontMatter(
+				this.plugin.settings.frontmatterDictionary,
+			);
+			writeFile(
+				fullPath,
+				newFrontmatter + stripFrontmatter(existing),
+				this.plugin.app,
+			);
+			return;
+		}
 
 		const bookContent = book.getContent();
 
