@@ -351,6 +351,9 @@ export class Settings extends PluginSettingTab {
 										/[[\]]/g,
 										"",
 									);
+								} else if (value.startsWith("#")) {
+									this.currentYAML[key] =
+										"[[" + value.replace(/#/g, "") + "]]";
 								} else {
 									this.currentYAML[key] = "[[" + value + "]]";
 								}
@@ -358,6 +361,27 @@ export class Settings extends PluginSettingTab {
 								this.display();
 							})
 							.setIcon("bracket-glyph").setTooltip,
+				)
+				.addExtraButton(
+					(button) =>
+						button
+							.setTooltip("Convert to tag")
+							.onClick(async () => {
+								if (value.startsWith("[[")) {
+									this.currentYAML[key] =
+										"#" + value.replace(/[[\]]/g, "");
+								} else if (value.startsWith("#")) {
+									this.currentYAML[key] = value.replace(
+										/#/g,
+										"",
+									);
+								} else {
+									this.currentYAML[key] = "#" + value;
+								}
+								await this.plugin.saveSettings();
+								this.display();
+							})
+							.setIcon("hash").setTooltip,
 				)
 				.addText((text) =>
 					text
