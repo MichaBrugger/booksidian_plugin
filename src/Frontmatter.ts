@@ -1,7 +1,7 @@
 import { FRONTMATTER_LINES } from "const/frontmatter";
 import { CurrentYAML } from "const/settings";
 import { Book } from "src/Book";
-import slugify from '@sindresorhus/slugify';
+import slugify from "@sindresorhus/slugify";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const yaml = require("js-yaml");
@@ -30,18 +30,21 @@ export class Frontmatter {
 			const [prefix, postfix] = value.split(key);
 
 			if (key === "shelves") {
-				const tagsOrPropertyKey = prefix === "#" ? "tags" : key
-				const values: number | string | string[] = []
-				
+				const tagsOrPropertyKey = prefix === "#" ? "tags" : key;
+				const values: number | string | string[] = [];
+
 				this.book.shelves.sort().forEach((shelf) => {
-					const sanitisedValue = prefix === "#" ? slugify(shelf) : shelf
+					const sanitisedValue =
+						prefix === "#" ? slugify(shelf) : shelf;
 					values.push(`${prefix}${sanitisedValue}${postfix}`);
 				});
 
 				if (Array.isArray(output[tagsOrPropertyKey])) {
-					output[tagsOrPropertyKey] = (output[tagsOrPropertyKey] as string[]).concat(values)
+					output[tagsOrPropertyKey] = (
+						output[tagsOrPropertyKey] as string[]
+					).concat(values);
 				} else {
-					output[tagsOrPropertyKey] = values
+					output[tagsOrPropertyKey] = values;
 				}
 			} else {
 				// If this a simple link, and the value of the string is empty, don't insert [[]]
@@ -52,15 +55,21 @@ export class Frontmatter {
 				) {
 					output[key] = "";
 				} else {
-					const tagsOrPropertyKey = prefix === "#" ? "tags" : key
-					const value = this.book[key as keyof Book].toString()
-					const sanitisedValue = prefix === "#" ? slugify(value) : value
+					const tagsOrPropertyKey = prefix === "#" ? "tags" : key;
+					const value = this.book[key as keyof Book].toString();
+					const sanitisedValue =
+						prefix === "#" ? slugify(value) : value;
 					if (Array.isArray(output[tagsOrPropertyKey])) {
-						(output[tagsOrPropertyKey] as string[]).push(sanitisedValue.toString())
-					} else if(prefix === "#") {
-						output[tagsOrPropertyKey]	= [`${prefix}${sanitisedValue}${postfix}`];
+						(output[tagsOrPropertyKey] as string[]).push(
+							sanitisedValue.toString(),
+						);
+					} else if (prefix === "#") {
+						output[tagsOrPropertyKey] = [
+							`${prefix}${sanitisedValue}${postfix}`,
+						];
 					} else {
-						output[tagsOrPropertyKey]	= `${prefix}${sanitisedValue}${postfix}`;
+						output[tagsOrPropertyKey] =
+							`${prefix}${sanitisedValue}${postfix}`;
 					}
 				}
 			}

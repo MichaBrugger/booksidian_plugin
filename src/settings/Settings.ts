@@ -325,10 +325,8 @@ export class Settings extends PluginSettingTab {
 										"",
 									);
 								} else if (value.startsWith("#")) {
-									this.currentYAML[key] = "[[" + value.replace(
-										/#/g,
-										"",
-									) + "]]";
+									this.currentYAML[key] =
+										"[[" + value.replace(/#/g, "") + "]]";
 								} else {
 									this.currentYAML[key] = "[[" + value + "]]";
 								}
@@ -343,10 +341,8 @@ export class Settings extends PluginSettingTab {
 							.setTooltip("Convert to tag")
 							.onClick(async () => {
 								if (value.startsWith("[[")) {
-									this.currentYAML[key] = "#" + value.replace(
-										/[[\]]/g,
-										"",
-									);
+									this.currentYAML[key] =
+										"#" + value.replace(/[[\]]/g, "");
 								} else if (value.startsWith("#")) {
 									this.currentYAML[key] = value.replace(
 										/#/g,
