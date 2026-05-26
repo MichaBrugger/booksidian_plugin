@@ -149,6 +149,8 @@ export class Settings extends PluginSettingTab {
 				});
 			});
 
+		let preserveBodySetting: Setting;
+
 		new Setting(containerEl)
 			.setName("Overwrite")
 			.setDesc(
@@ -160,8 +162,33 @@ export class Settings extends PluginSettingTab {
 				toggle.onChange((newValue) => {
 					this.plugin.settings.overwrite = newValue;
 					this.plugin.saveSettings();
+					preserveBodySetting.settingEl.toggleClass(
+						"is-hidden",
+						!newValue,
+					);
 				});
 			});
+
+		preserveBodySetting = new Setting(containerEl)
+			.setName("Preserve note body")
+			.setDesc(
+				"When overwriting, only update the YAML frontmatter and keep the note body untouched. Useful for preserving manual edits while still picking up dynamic Goodreads fields like dateRead and shelves.",
+			)
+			.addToggle((toggle) => {
+				toggle.setValue(this.plugin.settings.overwritePreserveBody);
+
+				toggle.onChange((newValue) => {
+					this.plugin.settings.overwritePreserveBody = newValue;
+					this.plugin.saveSettings();
+				});
+			});
+		preserveBodySetting.settingEl.addClass(
+			"booksidian-plugin__sub-setting",
+		);
+		preserveBodySetting.settingEl.toggleClass(
+			"is-hidden",
+			!this.plugin.settings.overwrite,
+		);
 
 		containerEl.createEl("h4", { text: "Book covers" });
 
